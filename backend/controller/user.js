@@ -3,7 +3,23 @@ const passwordUtil = require('./../utils/password')
 const jwtUtil = require('./../utils/jwt')
 
 exports.authenticate = (req, res) => {
-    
+    const { email, password } = req.body;
+
+    if (email.length === 0 || password.length === 0) {
+        res.status(400).json({})
+        return;
+    }
+
+    const hashedPassword = passwordUtil.createPasswordHash(password)
+    User.findOne({ email, password: hashedPassword }, (err, user) => {
+        if (user) {
+            user.password = undefined
+            const token = jwtUtil.createToken({ ...user })
+            res.status(200).json({ user,token })
+        }
+        else
+            res.status(401).json({ message: "User not found or incorrect password" })
+    })
 }
 
 exports.register = (req, res) => {
