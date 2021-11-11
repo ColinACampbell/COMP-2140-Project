@@ -6,6 +6,19 @@ exports.createToken = (payload) => {
     return jwt.sign(payload,secret)
 }
 
+exports.decodeToken = (token) => {
+    return jwt.decode(token)
+}
+
 exports.isTokenValid = (token) => {
-    return jwt.verify(token,secret)
+
+    return new Promise((resolve,reject)=>{
+        jwt.verify(token,secret,function (error,decodedPayload){
+            if (error)
+                reject(error);
+            else 
+                resolve(decodedPayload)
+        })
+    })
+     
 }
