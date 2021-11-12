@@ -1,21 +1,12 @@
 const express = require('express')
-const User = require('./mongo/user')
+const userRoutes = require('./routes/user')
+const assetRoutes = require('./routes/asset')
 
 const app = express(); // create the app
 
-// Listen for http requests at '/'
-app.get('/',(req,res)=>{
-    const okStatus = 200
-    res.status(okStatus).send("Hello World, welcome to the project!!")
-})
-
-app.get('/user',async (req,res)=>{
-    const query = await User.findOne({
-        name:"Colin"
-    })
-    console.log(query)
-    res.status(200).json(query)
-})
+app.use(express.json());
+app.use('/user',userRoutes)
+app.use('/asset',assetRoutes)
 
 const port = 3000 | process.env.PORT // define a port to listen for the process (net-centric stuff)
 app.listen(port,(err)=>{
