@@ -1,10 +1,12 @@
 const express = require('express')
-const cors = require('cors')
+var cors = require('cors')
 const userRoutes = require('./routes/user')
 const assetRoutes = require('./routes/asset')
 
 const app = express(); // create the app
 
+// app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors({
     origin: 'http://localhost:8080',
