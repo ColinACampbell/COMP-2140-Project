@@ -28,9 +28,8 @@ export default {
             "http://localhost:3000/user/",
             {
                 method: "POST",
-                mode: "no-cors",
                 headers: {
-                    "Content-Type": "application/json"
+                    'content-type': 'application/json',
                 },
                 body: JSON.stringify(info)
             }
