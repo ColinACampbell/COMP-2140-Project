@@ -1,10 +1,15 @@
 const express = require('express')
+const cors = require('cors')
 const userRoutes = require('./routes/user')
 const assetRoutes = require('./routes/asset')
 
 const app = express(); // create the app
 
 app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:8080',
+}))
+
 app.use('/user',userRoutes)
 app.use('/asset',assetRoutes)
 
