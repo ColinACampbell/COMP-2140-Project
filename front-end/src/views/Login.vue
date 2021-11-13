@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- <Header msg=""/> -->
         <div class="container">
             <div class="login-form">
                 <h1>Welcome!</h1>

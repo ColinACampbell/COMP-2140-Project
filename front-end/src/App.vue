@@ -1,19 +1,20 @@
 <template>
-
   <div>
     <Header msg="" />
-    <Signup />
+    <main>
+      <router-view></router-view>
+    </main>
   </div>
+
 </template>
 
 <script>
 import Header from "./components/Header.vue";
-import Signup from "./pages/Signup.vue"
+
 export default {
   name: "App",
   components: {
     Header,
-    Signup
   },
 };
 </script>

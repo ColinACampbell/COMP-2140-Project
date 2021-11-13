@@ -5,7 +5,7 @@ export default {
         // fetch post request
         const { email, password } = info;
         const res = await fetch(
-            "http://localhost:8000/login",
+            "http://localhost:3000/user/login",
             {
             method: "POST",
             headers: {
@@ -23,21 +23,16 @@ export default {
 
     async signup (info) {
         // fetch post request
-        const { name, position, email, password } = info;
         console.log(info)
         const res = await fetch(
-            "http://localhost:8000/signup",
+            "http://localhost:3000/user/",
             {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                name,
-                position,
-                email,
-                password,
-            })
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(info)
             }
         );
         const data = await res.json();

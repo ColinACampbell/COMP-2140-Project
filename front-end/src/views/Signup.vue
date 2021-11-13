@@ -37,40 +37,28 @@
 </template>
 
 <script>
-// import Header from "../components/Header.vue";
 import User from "../services/user.service";
 export default {
     name: 'Signup',
     data: function() {
         return {
-        name: "",
-        position: "",
-        email : "",
-        password: "",
-        positions: ["Data Analyst", "Content Creator", "Coaches", "Web developer", "Chief Executive Officer", "Paid Media Specialist", "Content Marketer", "Client"]
+            name: "",
+            position: "",
+            email : "",
+            password: "",
+            positions: ["Data Analyst", "Content Creator", "Coach", "Web developer", "Chief Executive Officer", "Paid Media Specialist", "Content Marketer", "Client"]
         }
     
     },
     methods: {
-        sanitize: function(string) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#x27;',
-                "/": '&#x2F;',
-            };
-            const reg = /[&<>"'/]/ig;
-            return string.replace(reg, (match)=>(map[match]));
-        },
         signupUser: function(){
-            this.name = this.sanitize(this.name)
-            let name = this.name
-            let position = this.position
-            let email = this.email
-            let password = this.password
-            User.signup({name, position, email, password})
+            let user = {
+                 name: this.name,
+                 position: this.position,
+                 email: this.email,
+                 password: this.password,
+            }
+            User.signup(user)
             // this.name = ""
             // this.position = ""
             // this.email = ""
