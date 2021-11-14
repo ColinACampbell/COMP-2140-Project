@@ -1,6 +1,8 @@
 <template>
   <div>
-    <Header msg="" />
+    <div v-if="isLogin">
+      <Header/>
+    </div>   
     <main>
       <router-view></router-view>
     </main>
@@ -16,12 +18,23 @@ export default {
   components: {
     Header,
   },
+
+  computed: {
+    isLogin(){
+      return this.$route.name == "Login" || this.$route.name == "Signup"
+    }
+  }
 };
 </script>
 
 <style>
 html{
   height: 100%;
+}
+
+body{
+  padding: 0;
+  margin: 0;
 }
 
 #app {

@@ -20,6 +20,7 @@ export default {
             return res.json()
         }).then(data => {
             console.log(data)
+            this.$router.push("/dashboard")
         })
     }, 
 
@@ -38,6 +39,7 @@ export default {
             return res.json()
         }).then(data => {
             console.log(data)
+            this.$router.push("/login")
         })
     }, 
 

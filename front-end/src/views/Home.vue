@@ -1,34 +1,18 @@
 <template>
-  <header class="header">
-      <nav class="navbar">
-          <div class="container">
-            <a href="#" class="navbar-brand">
-              <img src="../assets/ipp-logo.png" alt="IPP Logo"/>
-            </a>
-              <div class="navbar-nav">
-                  <ul class="navbar-nav">
-                      <li class="nav-item">
-                        <router-link to="/login" class="nav-link">Login</router-link>
-                      </li>
-                      <li class="nav-item" id="sign-up">
-                        <router-link to="/signup" class="nav-link">Sign up</router-link>
-                      </li>
-                  </ul>
-              </div>
-          </div>
-      </nav>
-  </header> 
+  <div>
+      <h1>Helllllooooooo</h1>
+  </div> 
 </template>
 
 <script>
 export default {
-  name: 'Header',
+  name: 'Home',
 }
 </script>
 
 <style scoped>
 .header{
-  padding: 10px 20px;
+  padding: 0 20px;
 }
 .container{
   display: flex;
