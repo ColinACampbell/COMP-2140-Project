@@ -11,6 +11,7 @@ exports.jwtCheck = (req, res, next) => {
         res.status(401).json({message:"No User Session"})
     else {
         jwtUtil.isTokenValid(token).then((token) => {
+            console.log(token)
             req.user_session = jwtUtil.decodeToken(token) // pass on the user information so it can be accessed in the controllers (layered approach)
             next()
         }).catch(err=>{
