@@ -1,12 +1,14 @@
 const express = require('express')
 const userRoutes = require('./routes/user')
 const assetRoutes = require('./routes/asset')
+const feedbackRoutes = require('./routes/feedback')
 
 const app = express(); // create the app
 
 app.use(express.json());
-app.use('/user',userRoutes)
-app.use('/asset',assetRoutes)
+app.use('/user',userRoutes);
+app.use('/asset',assetRoutes);
+app.use('/feedback',feedbackRoutes);
 
 const port = 3000 | process.env.PORT // define a port to listen for the process (net-centric stuff)
 app.listen(port,(err)=>{
