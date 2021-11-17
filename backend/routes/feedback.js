@@ -5,5 +5,7 @@ const authMiddleWare = require('./../middleware/authentication');
 
 router.use(authMiddleWare.jwtCheck);
 router.post('/', feedbackController.createFeedback);
+router.get('/',feedbackController.getAllFeedbacks);
+router.get('/:id',feedbackController.getFeedback)
 
 module.exports = router;
