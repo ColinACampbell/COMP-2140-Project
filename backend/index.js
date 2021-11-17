@@ -1,20 +1,12 @@
 const express = require('express')
-<<<<<<< HEAD
-var cors = require('cors')
-=======
 const cors = require('cors')
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUIExpress = require('swagger-ui-express');
->>>>>>> cf820128e98caaec98dc44e158e2d8b842a5c5ad
 const userRoutes = require('./routes/user')
 const assetRoutes = require('./routes/asset')
 
 const app = express(); // create the app
 
-<<<<<<< HEAD
-// app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true }));
-=======
 // Extended : https://swagger.io/specification/#infoObject
 const swaggerOptions = {
     swaggerDefinition: {
@@ -34,7 +26,6 @@ swaggerDocs = swaggerJsDoc(swaggerOptions)
 
 app.use('/documentation',swaggerUIExpress.serve,swaggerUIExpress.setup(swaggerDocs))
 
->>>>>>> cf820128e98caaec98dc44e158e2d8b842a5c5ad
 app.use(express.json());
 app.use(cors({
     origin: 'http://localhost:8080',
