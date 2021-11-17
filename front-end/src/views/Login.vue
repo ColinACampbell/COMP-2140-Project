@@ -16,6 +16,7 @@
                     <button type="submit" class="submit-btn">Login</button>
                 </form>
             </div>
+            <div v-if="error" class="error">Invalid login information</div>
         </div>
     </div> 
 </template>
@@ -29,6 +30,7 @@ export default {
       return {
         email : "",
         password: "",
+        error: false
       }
     
   },
@@ -37,6 +39,24 @@ export default {
         let email = this.email
         let password = this.password
         Login.login({email, password})
+            .then(res => {
+                console.log(res)
+                if(res === "Invalid login"){
+                    this.error = true
+                    this.email = ""
+                    this.password = ""
+                } else {
+                    this.$router.push("/dashboard")
+                }
+            })
+        
+        // if(res["message"]){
+        //     this.error = true
+            
+        // }else{
+        //     this.$router.push("/dashboard")
+        // }
+        
     }
   }
 
@@ -92,5 +112,9 @@ form label{
   background-color: #581eff;
   color: #ffffff;
   border: 1px solid #581eff;
+}
+
+.error{
+    color: #ff0033;
 }
 </style>

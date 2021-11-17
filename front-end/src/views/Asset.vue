@@ -5,7 +5,7 @@
         <button class="create-btn" @click="showModal">Create New Asset Container</button>
     </div>
     <div v-if="isModalVisible">
-        <AssetForm name="Raheem Wilson" :recipients="['hell', 'bell', 'fell', 'dell']" @close="closeModal"></AssetForm>
+        <AssetForm name="Raheem Wilson" :recipients="['hell', 'bell', 'fell', 'dell', 'sell', 'well', 'tell']" @close="closeModal"></AssetForm>
     </div>
   </div>
 

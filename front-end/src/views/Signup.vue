@@ -58,7 +58,9 @@ export default {
                  email: this.email,
                  password: this.password,
             }
-            User.signup(user)
+            let res = User.signup(user)
+            console.log(res)
+            this.$router.push("/")
             // this.name = ""
             // this.position = ""
             // this.email = ""

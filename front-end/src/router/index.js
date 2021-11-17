@@ -8,13 +8,13 @@ import Asset from "../views/Asset.vue"
 const routes = [
   {
     path: '/',
-    name: 'Signup',
-    component: Signup
-  },
-  {
-    path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: Signup
   },
   {
     path: "/dashboard",

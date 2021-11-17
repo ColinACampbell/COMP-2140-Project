@@ -1,10 +1,10 @@
 // services are used to make http requests
 
 export default {
-    login (info) {
+    async login (info) {
         // fetch post request
         const { email, password } = info;
-        fetch("http://localhost:3000/user/login",
+        let res =  await fetch("http://localhost:3000/user/authenticate",
             {
                 method: "POST",
                 body: JSON.stringify({
@@ -15,19 +15,23 @@ export default {
                     "Content-Type": "application/json"
                 },
                 
-            }
-        ).then(res => {
-            return res.json()
-        }).then(data => {
-            console.log(data)
-            this.$router.push("/dashboard")
-        })
+            })
+
+        let data = await res.json()
+        console.log(data)
+        if(data.message){
+            return "Invalid login"
+        }else{
+            // let userToken = {'token': data.token, 'user': data.user}
+            localStorage.setItem("login-token", JSON.stringify(data))
+            return "Successful"
+        }
+       
     }, 
 
-    signup (info) {
+    async signup (info) {
         // fetch post request
-        
-        fetch("http://localhost:3000/user/",
+        let res = await fetch("http://localhost:3000/user/",
             {
                 method: "POST",
                 headers: {
@@ -35,14 +39,9 @@ export default {
                 },
                 body: JSON.stringify(info)
             }
-        ).then(res => {
-            return res.json()
-        }).then(data => {
-            console.log(data)
-            this.$router.push("/login")
-        })
+        )
+        let data = res.json()
+        
+        return data
     }, 
-
-
-
 }

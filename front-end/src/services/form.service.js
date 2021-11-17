@@ -12,15 +12,45 @@ export default {
         return string.replace(reg, (match)=>(map[match]));
     },
 
-    processAsset(info, file){
-        let assetData = new FormData()
-        assetData.append('asset', file)
-        assetData.append('info', JSON.stringify(info))
+    // {
+    //     "asset": .....,
+    //      "filetype":....,
+    //     "title": "kakakka",
+    //     "description": "jdjdkshdfhjhf",
+    //     "date to be reviewd": "....."
+    //     "intended recipients": "emails.....",
+    //     "sender": "djjdjdjdjdj"
+    // }
+
+    toBase64(file){
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        })
+    },
+
+    processAsset(info){
+
+        let { file, type, title, description, sender, link, recepient } = info
+
+        let encodedFile = this.toBase64(file)
 
         fetch("http://localhost:3000/asset/create",
             {
                 method: "POST",
-                body: assetData,
+                body: JSON.stringify(
+                    {
+                        file: encodedFile,
+                        type: type,
+                        title: title,
+                        description: description,
+                        sender: sender,
+                        link: link,
+                        recepient: recepient
+                    }
+                ),
                 headers: {
                     "Content-Type": "application/json"
                 },
