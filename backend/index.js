@@ -4,6 +4,7 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUIExpress = require('swagger-ui-express');
 const userRoutes = require('./routes/user')
 const assetRoutes = require('./routes/asset')
+const feedbackRoutes = require('./routes/feedback')
 
 const app = express(); // create the app
 
@@ -27,12 +28,9 @@ swaggerDocs = swaggerJsDoc(swaggerOptions)
 app.use('/documentation',swaggerUIExpress.serve,swaggerUIExpress.setup(swaggerDocs))
 
 app.use(express.json());
-app.use(cors({
-    origin: 'http://localhost:8080',
-}))
-
-app.use('/user',userRoutes)
-app.use('/asset',assetRoutes)
+app.use('/user',userRoutes);
+app.use('/asset',assetRoutes);
+app.use('/feedback',feedbackRoutes);
 
 const port = 3000 | process.env.PORT // define a port to listen for the process (net-centric stuff)
 app.listen(port,(err)=>{
