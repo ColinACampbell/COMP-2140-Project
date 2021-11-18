@@ -1,5 +1,4 @@
-const Feedback = require('./../mongo/feedback');
-const mongoose = require('mongoose')
+const {Feedback,FeedbackReply} = require('./../mongo/feedback');
 
 exports.createFeedback = (req,res) => {
     const { message , title } = req.body;
