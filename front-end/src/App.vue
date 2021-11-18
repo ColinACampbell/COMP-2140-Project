@@ -2,7 +2,7 @@
   <div>
     <div v-if="isLogin">
       <Header/>
-    </div>   
+    </div>
     <main>
       <router-view></router-view>
     </main>
@@ -21,7 +21,7 @@ export default {
 
   computed: {
     isLogin(){
-      return this.$route.name == "Login" || this.$route.name == "Signup"
+      return this.$route.name === "Login" || this.$route.name === "Signup"
     }
   }
 };
