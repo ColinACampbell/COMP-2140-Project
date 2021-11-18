@@ -14,6 +14,7 @@ exports.createFeedback = (req,res) => {
         .then((feedback)=>{
             res.status(201).json(feedback) // return the owner too
         }).catch((err)=>{
+            console.log(err)
             res.status(500).json({
                 message : "Looks Like Something Went Wrong"
             })
@@ -30,12 +31,13 @@ exports.getAllFeedbacks = (req,res) => {
 
 exports.getFeedback = (req,res) => {
     const feedbackId = req.params.id
-    Feedback.findById({
-        _id : mongoose.Types.ObjectId(feedbackId)
-    }).then((err,feedback)=>{
+    Feedback.findOne({
+        _id : feedbackId
+    }).populate("postedBy","name").exec((err,feedback)=>{
         if (feedback)
             res.status(200).json(feedback)
-        else 
+        else {
             res.status(400).json({message:"Not Found"})
+        }
     })
 }
