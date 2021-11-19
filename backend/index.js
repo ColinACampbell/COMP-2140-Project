@@ -1,31 +1,9 @@
 const express = require('express')
-const cors = require('cors')
-const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUIExpress = require('swagger-ui-express');
 const userRoutes = require('./routes/user')
 const assetRoutes = require('./routes/asset')
 const feedbackRoutes = require('./routes/feedback')
 
 const app = express(); // create the app
-
-// Extended : https://swagger.io/specification/#infoObject
-const swaggerOptions = {
-    swaggerDefinition: {
-        info: {
-            title: "DamPlay API",
-            description: "DamPlay RESTful API Documentation",
-            contact : {
-                name : "Hexagrammers"
-            }
-        },
-        servers : ["http://localhost:3000"]
-    },
-    apis: [`${__dirname}/routes/*.js`]
-}
-
-swaggerDocs = swaggerJsDoc(swaggerOptions)
-
-app.use('/documentation',swaggerUIExpress.serve,swaggerUIExpress.setup(swaggerDocs))
 
 app.use(express.json());
 app.use('/user',userRoutes);

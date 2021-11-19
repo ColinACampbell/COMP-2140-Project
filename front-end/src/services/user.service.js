@@ -1,31 +1,33 @@
 // services are used to make http requests
 
 export default {
-    async login (info) {
+    login (info) {
         // fetch post request
         const { email, password } = info;
-        const res = await fetch(
-            "http://localhost:3000/user/login",
+        fetch("http://localhost:3000/user/login",
             {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email,
-                password,
-            })
+                method: "POST",
+                body: JSON.stringify({
+                    email,
+                    password,
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                
             }
-        );
-        const data = await res.json();
-        console.log(data.status);
+        ).then(res => {
+            return res.json()
+        }).then(data => {
+            console.log(data)
+            this.$router.push("/dashboard")
+        })
     }, 
 
-    async signup (info) {
+    signup (info) {
         // fetch post request
-        console.log(info)
-        const res = await fetch(
-            "http://localhost:3000/user/",
+        
+        fetch("http://localhost:3000/user/",
             {
                 method: "POST",
                 headers: {
@@ -33,9 +35,12 @@ export default {
                 },
                 body: JSON.stringify(info)
             }
-        );
-        const data = await res.json();
-        console.log(data.status);
+        ).then(res => {
+            return res.json()
+        }).then(data => {
+            console.log(data)
+            this.$router.push("/login")
+        })
     }, 
 
 
