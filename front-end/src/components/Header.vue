@@ -8,7 +8,7 @@
               <div class="navbar-nav">
                   <ul class="navbar-nav">
                       <li class="nav-item">
-                        <router-link to="/login" class="nav-link">Login</router-link>
+                        <router-link to="/" class="nav-link">Login</router-link>
                       </li>
                       <li class="nav-item" id="sign-up">
                         <router-link to="/signup" class="nav-link">Sign up</router-link>
@@ -52,6 +52,14 @@ export default {
   align-items: center;
   justify-content: center;
   margin: 10px;
+}
+
+.nav-link{
+  width: 100px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .nav-item:hover{

@@ -85,7 +85,7 @@ a{
 }
 
 .nav-item{
-    margin: 20px 0;
+    margin: 10px 0;
     list-style: none;
     width: 250px;
     height: 50px;
@@ -98,15 +98,15 @@ a{
     filter: brightness(0) invert(1);
 }
 
-.nav-item:hover, .active{
+.active{
     background: #ffffff;
 }
 
-.nav-item:hover a, .active a{
+.active a{
     color: #000;
 }
 
-.nav-item:hover img, .active img{
+.active img{
     filter: none;
 }
 

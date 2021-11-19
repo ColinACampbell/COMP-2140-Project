@@ -24,15 +24,13 @@ exports.authenticate = (req, res) => {
 
 exports.register = (req, res) => {
     const { email, name, password, position } = req.body;
-    console.log(req.body)
     // find if email first
     User.exists({ email }, async (err, exisits) => {
         if (exisits)
             res.status(409).json({})
         else {
             const hashedPassword = passwordUtil.createPasswordHash(password)
-            console.log(hashedPassword)
-            const user = await User.create({ email, name, hashedPassword, position })
+            const user = await User.create({ email, name, password: hashedPassword, position })
             user.password = undefined
             const token = jwtUtil.createToken({ ...user })
             res.status(201).json({ user, token })

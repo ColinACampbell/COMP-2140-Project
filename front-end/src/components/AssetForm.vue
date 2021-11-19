@@ -18,7 +18,6 @@
             <div>
                 <label for="recipient">Recipient(s)</label>
                 <select name="positions" id="positions" v-model="receivers" multiple="true" required>
-                    <option disabled value="">Please select your recipients</option>
                     <option v-for="option in recipients" v-bind:value="option" v-bind:key="option">
                         {{option}}
                     </option>
@@ -55,6 +54,7 @@ export default {
         description: "",
         senderName: this.name,
         file: "",
+        type: "",
         link: "",
         receivers: []
     } 
@@ -62,19 +62,22 @@ export default {
   methods:{
     handleFileUpload( event ){
         this.file = event.target.files[0];
+        this.type = this.file.type;
     },
     close() {
         this.$emit('close');
     },
     handleSubmit(){
         let asset = {
+            file: this.file,
+            type: this.type,
             title: this.title,
             description: this.description,
             sender: this.senderName,
             link: this.link,
             recepient: this.receivers
         }
-        Form.processAsset(asset, this.file)
+        Form.processAsset(asset)
     }
 }
 }
@@ -84,7 +87,7 @@ export default {
 .modal {
   position: fixed; 
   z-index: 1; 
-  padding-top: 10px; 
+  padding-top: 0px; 
   left: 0;
   top: 0;
   width: 100vw; 
@@ -114,6 +117,8 @@ input, select, textarea{
 
 textarea{
     height: 100px;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-size: 14px;
 }
 
 form div{
@@ -145,8 +150,14 @@ button:disabled{
     background: none;
     color: #865cff;
 }
+
 .custom-file-input {
     border: none;
     padding: 10px 0;
+}
+
+select[multiple] {
+    padding-top: 5px ;
+    height: 6rem;
 }
 </style>
