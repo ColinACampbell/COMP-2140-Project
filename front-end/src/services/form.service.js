@@ -12,16 +12,6 @@ export default {
         return string.replace(reg, (match)=>(map[match]));
     },
 
-    // {
-    //     "asset": .....,
-    //      "filetype":....,
-    //     "title": "kakakka",
-    //     "description": "jdjdkshdfhjhf",
-    //     "date to be reviewd": "....."
-    //     "intended recipients": "emails.....",
-    //     "sender": "djjdjdjdjdj"
-    // }
-
     toBase64(file){
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -36,6 +26,9 @@ export default {
         let { file, type, title, description, sender, link, recepient } = info
 
         let encodedFile = this.toBase64(file)
+
+        let userData = JSON.parse(localStorage.getItem("login-token"))
+        var token = userData["token"]
 
         fetch("http://localhost:3000/asset/create",
             {
@@ -52,7 +45,8 @@ export default {
                     }
                 ),
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
                 },
                 
             }

@@ -9,7 +9,7 @@
             </div>
             <div>
                 <label for="description">Description</label>
-                <textarea name="description" id="description" cols="30" rows="10" v-model="description"></textarea>
+                <textarea name="description" id="description" cols="30" rows="10" v-model="description" required></textarea>
             </div>
             <div>
                 <label for="sender">Sender</label>
@@ -78,6 +78,8 @@ export default {
             recepient: this.receivers
         }
         Form.processAsset(asset)
+        this.close()
+        alert("Asset Created!")
     }
 }
 }
@@ -116,7 +118,7 @@ input, select, textarea{
 }
 
 textarea{
-    height: 100px;
+    height: 70px;
     font-family: Avenir, Helvetica, Arial, sans-serif;
     font-size: 14px;
 }
