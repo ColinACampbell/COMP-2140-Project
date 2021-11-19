@@ -2,7 +2,7 @@ const User = require('./../mongo/user')
 const passwordUtil = require('./../utils/password')
 const jwtUtil = require('./../utils/jwt')
 
-exports.authenticate = (req, res) => {
+exports.authenticate = async (req, res) => {
     const { email, password } = req.body;
 
     if (email.length === 0 || password.length === 0) {
@@ -10,12 +10,14 @@ exports.authenticate = (req, res) => {
         return;
     }
 
+    const users = await User.find({},"name _id");
+
     const hashedPassword = passwordUtil.createPasswordHash(password)
     User.findOne({ email, password: hashedPassword }, (err, user) => {
         if (user) {
             user.password = undefined
             const token = jwtUtil.createToken({ ...user })
-            res.status(200).json({ user,token })
+            res.status(200).json({ user,token, members: users })
         }
         else
             res.status(401).json({ message: "User not found or incorrect password" })
