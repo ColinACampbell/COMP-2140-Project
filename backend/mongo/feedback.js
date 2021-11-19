@@ -1,11 +1,21 @@
 const { Schema, model } = require("mongoose");
 const mongooseConn = require('./index')
 
-const feedbackSchema = new Schema({
-    owner_id: String,
-    asset_id: String,
-    title : String,
-    message : String
+const feedbackReplySchema = new Schema({
+    postedBy: {
+        type: Schema.Types.ObjectId, ref: 'User'
+    },
+    message: String,
+    time:Number
 })
 
-module.exports = mongooseConn.model('Feedback',feedbackSchema)
+const feedbackSchema = new Schema({
+    postedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    asset_id: String,
+    title: String,
+    message: String,
+    replies : [feedbackReplySchema]
+})
+
+exports.Feedback = mongooseConn.model('Feedback', feedbackSchema)
+exports.FeedbackReply = mongooseConn.model('FeedbackReply',feedbackReplySchema)

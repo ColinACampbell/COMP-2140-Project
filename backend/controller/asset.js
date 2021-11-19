@@ -2,8 +2,8 @@ const crypto = require('crypto');
 const Asset = require("../mongo/asset");
 //const {mangoose }= require("mangoose");
 exports.getAssets = (req, res) => {
-    Asset.find({},'title type description sender').then((assets) => {
-        res.status(200).json(assets)
+    res.status(200).json({
+        assets: []
     })
 }
 
