@@ -25,6 +25,10 @@ const swaggerOptions = {
 
 swaggerDocs = swaggerJsDoc(swaggerOptions)
 
+app.use(cors({
+    origin: 'http://localhost:8080',
+}))
+
 app.use('/documentation',swaggerUIExpress.serve,swaggerUIExpress.setup(swaggerDocs))
 
 app.use(express.json());
