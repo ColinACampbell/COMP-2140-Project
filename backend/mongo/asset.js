@@ -6,10 +6,9 @@ const assetSchema = new Schema({
     type: String,
     title: String,
     description: String,
-    sender: String,
     link: String,
-    recepient: String
-
+    sender: { type: Schema.Types.ObjectId, ref: 'User' },
+    recepient: { type: Schema.Types.ObjectId, ref: 'User' },
 })
 
 module.exports = mongooseConn.model('Asset',assetSchema)
