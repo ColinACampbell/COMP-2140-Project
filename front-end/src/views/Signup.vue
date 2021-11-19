@@ -61,10 +61,6 @@ export default {
             let res = User.signup(user)
             console.log(res)
             this.$router.push("/")
-            // this.name = ""
-            // this.position = ""
-            // this.email = ""
-            // this.password = ""
         }
     }
 }
