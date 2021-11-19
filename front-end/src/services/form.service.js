@@ -30,7 +30,7 @@ export default {
         let userData = JSON.parse(localStorage.getItem("login-token"))
         var token = userData["token"]
 
-        fetch("http://localhost:3000/asset/create",
+        fetch("http://localhost:3000/asset/",
             {
                 method: "POST",
                 body: JSON.stringify(
