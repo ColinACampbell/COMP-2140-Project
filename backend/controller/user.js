@@ -10,7 +10,7 @@ exports.authenticate = async (req, res) => {
         return;
     }
 
-    const users = await User.find({},"name _id");
+    const users = await User.find({},"name email _id");
 
     const hashedPassword = passwordUtil.createPasswordHash(password)
     User.findOne({ email, password: hashedPassword }, (err, user) => {
