@@ -17,11 +17,7 @@ exports.authenticate = async (req, res) => {
         if (user) {
             user.password = undefined
             const token = jwtUtil.createToken({ ...user })
-<<<<<<< HEAD
-            res.status(200).json({ user, token })
-=======
             res.status(200).json({ user,token, members: users })
->>>>>>> origin/master
         }
         else
             res.status(401).json({ message: "User not found or incorrect password" })

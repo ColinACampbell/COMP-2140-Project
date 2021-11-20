@@ -18,13 +18,12 @@ export default {
             })
 
         let data = await res.json()
-        console.log(data)
         if(data.message){
             return "Invalid login"
         }else{
             // let userToken = {'token': data.token, 'user': data.user}
-            localStorage.setItem("login-token", JSON.stringify(data))
-            return "Successful"
+            // sessionStorage.setItem("login-token", JSON.stringify(data))
+            return data
         }
        
     }, 

@@ -17,12 +17,12 @@
             </div>
             <div>
                 <label for="recipient">Recipient(s)</label>
-                <select name="positions" id="positions" v-model="receivers" multiple="true" required>
-                    <option v-for="option in recipients" v-bind:value="option" v-bind:key="option">
-                        {{option}}
+                <select name="positions" id="positions" v-model="receiverNames" multiple="true" required>
+                    <option v-for="option in recipients" v-bind:value="option.name" v-bind:key="option.email">
+                        {{option.name}}
                     </option>
                 </select>
-                {{ receivers }}
+                {{ receiverNames }}
             </div>
             <div>
                 <label for="file">Link to File</label>
@@ -43,6 +43,7 @@
 
 <script>
 import Form from "../services/form.service"
+
 export default {
   name: 'Asset',
   props: [
@@ -56,7 +57,8 @@ export default {
         file: "",
         type: "",
         link: "",
-        receivers: []
+        receivers: [],
+        receiverNames: []
     } 
   },
   methods:{
@@ -68,6 +70,12 @@ export default {
         this.$emit('close');
     },
     handleSubmit(){
+        this.recipients.forEach(member => {
+            if(this.receiverNames.includes(member.name)){
+                this.receivers.push(member._id)
+            }
+        });
+
         let asset = {
             file: this.file,
             type: this.type,
@@ -77,6 +85,7 @@ export default {
             link: this.link,
             recepient: this.receivers
         }
+        console.log(asset)
         Form.processAsset(asset)
         this.close()
         alert("Asset Created!")

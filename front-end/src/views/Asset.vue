@@ -5,7 +5,7 @@
         <button class="create-btn" @click="showModal">Create New Asset Container</button>
     </div>
     <div v-if="isModalVisible">
-        <AssetForm :name="name" :recipients="[]" @close="closeModal"></AssetForm>
+        <AssetForm :name="name" :recipients="recipients" @close="closeModal"></AssetForm>
     </div>
   </div>
 
@@ -13,6 +13,8 @@
 
 <script>
 import AssetForm from "../components/AssetForm.vue"
+import store from '../store/store'
+
 export default {
   name: "Asset",
   components: {
@@ -20,8 +22,9 @@ export default {
   },
   data(){
     return{
-        name: "", 
-        isModalVisible: false
+        name: store.getters.userName, 
+        isModalVisible: false,
+        recipients: store.getters.members
     }
   },
   // beforeRouteEnter (to, from, next) {

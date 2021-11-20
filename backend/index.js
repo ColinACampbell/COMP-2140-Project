@@ -24,22 +24,15 @@ const swaggerOptions = {
 }
 
 swaggerDocs = swaggerJsDoc(swaggerOptions)
-
+app.use(cors({
+    origin: '*'
+}));
 app.use('/documentation',swaggerUIExpress.serve,swaggerUIExpress.setup(swaggerDocs))
 
 app.use(express.json());
-<<<<<<< HEAD
-app.use(cors({
-    origin: 'http://localhost:8080',
-}))
-
-app.use('/user',userRoutes)
-app.use('/asset',assetRoutes)
-=======
 app.use('/user',userRoutes);
 app.use('/asset',assetRoutes);
 app.use('/feedback',feedbackRoutes);
->>>>>>> origin/master
 
 const port = 3000 | process.env.PORT // define a port to listen for the process (net-centric stuff)
 app.listen(port,(err)=>{

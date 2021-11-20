@@ -1,3 +1,4 @@
+import store from "../store/store"
 export default {
     sanitize: function(string) {
         const map = {
@@ -25,12 +26,15 @@ export default {
 
         let { file, type, title, description, sender, link, recepient } = info
 
-        let encodedFile = this.toBase64(file)
+        let encodedFile = ""
+        if(file){
+            encodedFile = this.toBase64(file)
+        }
 
-        let userData = JSON.parse(localStorage.getItem("login-token"))
-        var token = userData["token"]
+        let token = store.getters.token
+        console.log(token)
 
-        fetch("http://localhost:3000/asset/create",
+        fetch("http://localhost:3000/asset/",
             {
                 method: "POST",
                 body: JSON.stringify(

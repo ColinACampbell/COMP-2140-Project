@@ -23,6 +23,7 @@
 
 <script>
 import Login  from "../services/user.service.js";
+import store from '../store/store'
 
 export default {
   name: 'Login',
@@ -46,6 +47,7 @@ export default {
                     this.email = ""
                     this.password = ""
                 } else {
+                    store.commit('updateUserInfo', { userInfo: res })
                     this.$router.push("/dashboard")
                 }
             })

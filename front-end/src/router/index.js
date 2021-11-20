@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '../store/store'
 import Signup from "../views/Signup.vue"
 import Login from "../views/Login.vue"
 import Dashboard from "../views/Dashboard.vue"
@@ -53,7 +54,8 @@ const redirectToLogin = route => {
 };
 
 router.beforeEach((to) => {
-  let localUserData = JSON.parse(localStorage.getItem('login-token'))
+  // let localUserData = JSON.parse(sessionStorage.getItem('login-token'))
+  let localUserData = store.state.userInfo;
   let userData = localUserData || {}
   let userIsAuthenticated = userData.token !== "" && userData.token !== undefined
   const requiresAuth = to.matched.some((route) => route.meta && route.meta.requiresAuth);
