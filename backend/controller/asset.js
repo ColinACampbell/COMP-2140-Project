@@ -1,14 +1,35 @@
 const crypto = require('crypto');
 const Asset = require("../mongo/asset");
 //const {mangoose }= require("mangoose");
-exports.getAssets = (req, res) => {
+exports.getAssets = async (req, res) => {
+
+    const selectedFields = "assetLink description, type, name, recipients, sender"
+    const populateFields = [{
+        path: "recipients",
+        select: "name email _id"
+    },
+    {
+        path: "sender",
+        select: "name email _id"
+    }];
+
+    const userID = req.user_session._id;
+    const sentAssets = await Asset.find({
+        sender: userID
+    }, selectedFields).populate(populateFields);
+
+    const recievedAssets = await Asset.find({
+        recipients: userID
+    }, selectedFields).populate(populateFields)
+
     res.status(200).json({
-        assets: []
+        sent: sentAssets,
+        recieved: recievedAssets
     })
 }
 
 exports.getAsset = (req, res) => {
-    // TODO : Implement
+
 }
 
 exports.uploadAsset = (req, res) => {
