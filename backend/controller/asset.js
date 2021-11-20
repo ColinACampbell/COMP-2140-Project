@@ -13,18 +13,20 @@ exports.getAsset = (req, res) => {
 
 exports.uploadAsset = (req, res) => {
 
-    console.log(req.body)
-    const { assetLink, sender, description, type, fileData, name, recepient } = req.body;
+    console.log(req.user_session._id)
+    const { assetLink, description, type, fileData, name, recipients } = req.body;
+
+    const sender = req.user_session._id;
 
     let asset = {
         // attributes of the document and should correspond with mango
-        fileData: req.body.fileData, // base64 format
-        type: req.body.type,
-        name: req.body.name,
-        description: req.body.description,
-        sender: req.body.sender, // the id of the sender
-        assetLink: assetLink, // this should be auto generated
-        recepient: req.body.recepient // the id of the recipient
+        fileData: fileData, // base64 format
+        type, // Content type
+        name,
+        description: description,
+        sender, // the id of the sender
+        assetLink: assetLink, // The link to the asset
+        recipients // array of id's of the recipients ['...','...']
     }
     Asset.create(asset, function (err, result) {
         if (err) {
