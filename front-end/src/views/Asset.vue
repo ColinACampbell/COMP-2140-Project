@@ -5,7 +5,7 @@
         <button class="create-btn" @click="showModal">Create New Asset Container</button>
     </div>
     <div v-if="isModalVisible">
-        <AssetForm name="Raheem Wilson" :recipients="['hell', 'bell', 'fell', 'dell', 'sell', 'well', 'tell']" @close="closeModal"></AssetForm>
+        <AssetForm :name="name" :recipients="[]" @close="closeModal"></AssetForm>
     </div>
   </div>
 
@@ -20,9 +20,23 @@ export default {
   },
   data(){
     return{
+        name: "", 
         isModalVisible: false
     }
   },
+  // beforeRouteEnter (to, from, next) {
+  //   getPost(to.params.id, (err, post) => {
+  //     next(vm => vm.setData(err, post))
+  //   })
+  // },
+  
+  // beforeRouteUpdate (to, from, next) {
+  //   this.post = null
+  //   getPost(to.params.id, (err, post) => {
+  //     this.setData(err, post)
+  //     next()
+  //   })
+  // },
   methods: {
     showModal() {
         this.isModalVisible = true;
@@ -30,6 +44,7 @@ export default {
     closeModal() {
         this.isModalVisible = false;
     }
+
   }
 };
 </script>
