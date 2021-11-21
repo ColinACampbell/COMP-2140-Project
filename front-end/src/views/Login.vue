@@ -41,7 +41,6 @@ export default {
         let password = this.password
         Login.login({email, password})
             .then(res => {
-                console.log(res)
                 if(res === "Invalid login"){
                     this.error = true
                     this.email = ""

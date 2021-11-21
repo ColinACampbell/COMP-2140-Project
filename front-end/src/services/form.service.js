@@ -24,7 +24,7 @@ export default {
 
     processAsset(info){
 
-        let { file, type, title, description, sender, link, recepient } = info
+        let { file, type, title, description, sender, link, recepient, reviewDate } = info
 
         let encodedFile = ""
         if(file){
@@ -32,20 +32,20 @@ export default {
         }
 
         let token = store.getters.token
-        console.log(token)
 
         fetch("http://localhost:3000/asset/",
             {
                 method: "POST",
                 body: JSON.stringify(
                     {
-                        file: encodedFile,
+                        fileData: encodedFile,
                         type: type,
-                        title: title,
+                        name: title,
                         description: description,
                         sender: sender,
-                        link: link,
-                        recepient: recepient
+                        assetLink: link,
+                        recepients: recepient,
+                        reviewDate: reviewDate
                     }
                 ),
                 headers: {
@@ -55,10 +55,12 @@ export default {
                 
             }
         ).then(res => {
-            return res.json()
+            if(res.status === 201){
+                return "Successful"
+            }
+            return "Failed to upload"
         }).then(data => {
-            console.log(data)
-            console.log("It worked!")
+            return data
         })
     }
 }

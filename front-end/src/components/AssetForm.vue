@@ -4,12 +4,16 @@
         <h2>Create Asset Container</h2>
         <form id="create-issue-form" method="post" @submit.prevent="handleSubmit">
             <div>
-                <label for="title">Title</label>
+                <label for="title">Title  <span v-if="error">--{{error}}--</span></label>
                 <input type="text" name="title" id="title" v-model="title" required/>
             </div>
             <div>
                 <label for="description">Description</label>
                 <textarea name="description" id="description" cols="30" rows="10" v-model="description" required></textarea>
+            </div>
+            <div>
+                <label for="reviewDate">Reviewed by</label>
+                <input type="date" name="reviewDate" id="reviewDate" min="" v-model="reviewDate" required>
             </div>
             <div>
                 <label for="sender">Sender</label>
@@ -57,8 +61,10 @@ export default {
         file: "",
         type: "",
         link: "",
+        reviewDate: "",
         receivers: [],
-        receiverNames: []
+        receiverNames: [],
+        error: ""
     } 
   },
   methods:{
@@ -82,13 +88,19 @@ export default {
             title: this.title,
             description: this.description,
             sender: this.senderName,
+            reviewDate: this.reviewDate,
             link: this.link,
             recepient: this.receivers
         }
-        console.log(asset)
-        Form.processAsset(asset)
-        this.close()
-        alert("Asset Created!")
+        let res = Form.processAsset(asset)
+        if(res === "Successful"){
+            this.close()
+            alert("Asset Created!")
+        }else{
+            this.error = "This title exist for another container"
+            this.title = ""
+        }
+        
     }
 }
 }

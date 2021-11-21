@@ -18,11 +18,9 @@ export default {
             })
 
         let data = await res.json()
-        if(data.message){
+        if(res.status === 401){
             return "Invalid login"
         }else{
-            // let userToken = {'token': data.token, 'user': data.user}
-            // sessionStorage.setItem("login-token", JSON.stringify(data))
             return data
         }
        
