@@ -6,7 +6,7 @@ const feedbackReplySchema = new Schema({
         type: Schema.Types.ObjectId, ref: 'User'
     },
     message: String,
-    time:Number
+    time: Number
 })
 
 const feedbackSchema = new Schema({
