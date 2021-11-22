@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const {Asset,AssetStatusHistory} = require("../mongo/asset");
+const { Asset, AssetStatusHistory } = require("../mongo/asset");
 //const {mangoose }= require("mangoose");
 exports.getAssets = async (req, res) => {
 
@@ -11,6 +11,12 @@ exports.getAssets = async (req, res) => {
     {
         path: "sender",
         select: "name email _id"
+    }, {
+        path: "history",
+        populate: {
+            path: "updatedBy",
+            select: "name email _id"
+        }
     }];
 
     const userID = req.user_session._id;
@@ -31,10 +37,23 @@ exports.getAssets = async (req, res) => {
 exports.getAsset = (req, res) => {
     const assetID = req.params.id;
     Asset.findOne({
-        _id:assetID
-    }).populate("history").exec((err,asset)=>{
-        asset.fileData = undefined
-        res.status(200).json(asset)
+        _id: assetID
+    }).populate({
+        path: "history",
+        populate: {
+            path: "updatedBy",
+            select: "name email _id"
+        }
+    }).exec((err, asset) => {
+        if (err || !asset) {
+            res.status(400).json({
+                message: "Lookes Like Something when wrong"
+            })
+        } else {
+            asset.fileData = undefined
+            res.status(200).json(asset)
+        }
+
     })
 }
 
@@ -54,7 +73,7 @@ exports.uploadAsset = (req, res) => {
         sender, // the id of the sender
         assetLink: assetLink, // The link to the asset
         recipients, // array of id's of the recipients ['...','...']
-        status:"submitted"
+        status: "submitted"
     }
     Asset.create(asset, async function (err, asset) {
         if (err) {
@@ -63,7 +82,8 @@ exports.uploadAsset = (req, res) => {
         } else {
             asset.history.push({
                 time: new Date().getTime(),
-                status: "submitted"
+                status: "submitted",
+                updatedBy: req.user_session._id
             })
             asset.save()
             res.status(201).json({}); // Send the '201' status code to let the user/client know the operation was successful

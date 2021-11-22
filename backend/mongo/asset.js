@@ -3,7 +3,8 @@ const mongooseConn = require('./index')
 
 const assetStatusHistorySchema = new Schema({
     status:String,
-    time: Number
+    time: Number,
+    updatedBy:{type:Schema.Types.ObjectId,ref:'User'}
 })
 
 const assetSchema = new Schema({
