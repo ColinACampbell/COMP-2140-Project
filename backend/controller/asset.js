@@ -60,7 +60,7 @@ exports.getAsset = (req, res) => {
 exports.uploadAsset = (req, res) => {
 
     console.log(req.user_session._id)
-    const { assetLink, description, type, fileData, name, recipients } = req.body;
+    const { assetLink, description, type, fileData, name, recipients, dateAdded } = req.body;
 
     const sender = req.user_session._id;
 
@@ -73,7 +73,8 @@ exports.uploadAsset = (req, res) => {
         sender, // the id of the sender
         assetLink: assetLink, // The link to the asset
         recipients, // array of id's of the recipients ['...','...']
-        status: "submitted"
+        status: "submitted",
+        reviewedBy
     }
     Asset.create(asset, async function (err, asset) {
         if (err) {
