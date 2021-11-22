@@ -92,14 +92,16 @@ export default {
             link: this.link,
             recepient: this.receivers
         }
-        let res = Form.processAsset(asset)
-        if(res === "Successful"){
-            this.close()
-            alert("Asset Created!")
-        }else{
-            this.error = "This title exist for another container"
-            this.title = ""
-        }
+        Form.processAsset(asset)
+            .then(res => {
+                if(res === "Successful"){
+                    this.close()
+                    alert("Asset Created!")
+                }else{
+                    this.error = "This title exist for another container"
+                    this.title = ""
+                }
+            })
         
     }
 }
@@ -107,6 +109,9 @@ export default {
 </script>
 
 <style scoped>
+span{
+    color: red;
+}
 .modal {
   position: fixed; 
   z-index: 1; 

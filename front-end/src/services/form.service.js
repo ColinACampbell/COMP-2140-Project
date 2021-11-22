@@ -22,7 +22,7 @@ export default {
         })
     },
 
-    processAsset(info){
+    async processAsset(info){
 
         let { file, type, title, description, sender, link, recepient, reviewDate } = info
 
@@ -33,7 +33,7 @@ export default {
 
         let token = store.getters.token
 
-        fetch("http://localhost:3000/asset/",
+        let res = await fetch("http://localhost:3000/asset/",
             {
                 method: "POST",
                 body: JSON.stringify(
@@ -54,13 +54,13 @@ export default {
                 },
                 
             }
-        ).then(res => {
-            if(res.status === 201){
-                return "Successful"
-            }
-            return "Failed to upload"
-        }).then(data => {
-            return data
-        })
+        )
+            
+        if(res.status === 201){
+            return "Successful"
+        }
+        
+        return "Failed to upload"
+        
     }
 }
