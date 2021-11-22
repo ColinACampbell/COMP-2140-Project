@@ -7,6 +7,7 @@ router.use(authMiddleWare.jwtCheck); // set up this middleware for this set of r
 
 router.get('/',assetController.getAssets);
 router.get('/:id',assetController.getAsset);
+router.put('/:id/status',assetController.changeAssetStatus)
 router.post('/', assetController.uploadAsset); // posting at '/'  just creates the resource
 
 module.exports = router;

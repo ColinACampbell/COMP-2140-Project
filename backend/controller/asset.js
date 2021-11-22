@@ -90,17 +90,34 @@ exports.uploadAsset = (req, res) => {
         }
     })
 }
-// 1. get asset related to a user. i.e a person who sent the asset or in the receipent list.
-// will be sending two list, senders and receivers.
 
-/*exports.getAsset = (req,res)=>{
-    assetJson = assetModel;
-    fetchData:function(callback){
-        const assetData=assetJson.find({})
-        assetData.exec(function(err, data){
-            if(err) throw err;
-            return callback(data);
+
+exports.changeAssetStatus = async (req, res) => {
+    const userID = req.user_session._id;
+    const assetId = req.params.id;
+    const { status } = req.body;
+
+    if (status == undefined || status == null)
+        res.status(400).json({ message: "Invalid Status" })
+    else {
+        const asset = await Asset.findOne({
+            _id: assetId,
+        }).populate({
+            path: "history",
+            populate: {
+                path: "updatedBy",
+                select: "name email _id"
+            }
         })
-        res.render('json',{assetData:data});
+        asset.status = status;
+        asset.history.push(
+            {
+                time: new Date().getTime(),
+                status: status,
+                updatedBy: userID
+            })
+        asset.save();
+        asset.fileData = null;
+        res.status(200).json(asset)
     }
-}*/
+}
