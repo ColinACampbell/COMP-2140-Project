@@ -60,7 +60,7 @@ exports.getAsset = (req, res) => {
 exports.uploadAsset = (req, res) => {
 
     console.log(req.user_session._id)
-    const { assetLink, description, type, fileData, name, recipients, dateAdded } = req.body;
+    const { assetLink, description, type, fileData, name, recipients, reviewedBy } = req.body;
 
     const sender = req.user_session._id;
 
