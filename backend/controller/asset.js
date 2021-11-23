@@ -3,7 +3,7 @@ const { Asset, AssetStatusHistory } = require("../mongo/asset");
 //const {mangoose }= require("mangoose");
 exports.getAssets = async (req, res) => {
 
-    const selectedFields = "assetLink description, type, name, recipients, sender, title, status, reviewedBy"
+    const selectedFields = "assetLink description type name recipients sender title status reviewedBy"
     const populateFields = [{
         path: "recipients",
         select: "name email _id"
@@ -47,7 +47,7 @@ exports.getAsset = (req, res) => {
     }).exec((err, asset) => {
         if (err || !asset) {
             res.status(400).json({
-                message: "Lookes Like Something when wrong"
+                message: "Looks Like Something when wrong"
             })
         } else {
             asset.fileData = undefined
@@ -68,7 +68,7 @@ exports.uploadAsset = (req, res) => {
         // attributes of the document and should correspond with mango
         fileData: fileData, // base64 format
         type, // Content type
-        name,
+        title:name,
         description: description,
         sender, // the id of the sender
         assetLink: assetLink, // The link to the asset
