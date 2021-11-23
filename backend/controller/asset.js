@@ -3,7 +3,7 @@ const { Asset, AssetStatusHistory } = require("../mongo/asset");
 //const {mangoose }= require("mangoose");
 exports.getAssets = async (req, res) => {
 
-    const selectedFields = "assetLink description, type, name, recipients, sender"
+    const selectedFields = "assetLink description, type, name, recipients, sender, title, status, reviewedBy"
     const populateFields = [{
         path: "recipients",
         select: "name email _id"
