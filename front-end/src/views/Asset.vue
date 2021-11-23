@@ -1,82 +1,289 @@
 <template>
-  <div class="container">
-    <div class="header">
-        <h1>Current Assets</h1>
-        <button class="create-btn" @click="showModal">Create New Asset Container</button>
+<div class="asset">
+    <h2>{{ title }}</h2>
+    <div class="asset-container">
+        <div class="asset-content"> 
+            <form id="create-issue-form" method="post" @submit.prevent="handleSubmit">
+                <div>
+                    <label for="title">Title</label>
+                    <input type="text" name="title" id="title" v-model="title" required :readonly="!isEditable"/>
+                </div>
+                <div>
+                    <label for="description">Description</label>
+                    <textarea name="description" id="description" cols="30" rows="10" v-model="description" :readonly="!isEditable" required></textarea>
+                </div>
+                <div>
+                    <label for="sender">Sender</label>
+                    <input type="text" name="sender" id="sender" v-model="senderName" readonly/>
+                </div>
+                <div>
+                    <label for="status">Asset Status</label>
+                    <select name="status" id="status" v-model="status" required v-if="changeStatus || isEditable">
+                        <option v-for="option in options" v-bind:value="option" v-bind:key="option" :selected="option === status">
+                            {{option}}
+                        </option>
+                    </select>
+                    <div v-if="!isEditable && !changeStatus" :class="status">{{ status }}</div>
+                </div>
+                <div>
+                    <label for="recipient">Recipient(s)</label>
+                    <select name="positions" id="positions" v-model="receiverNames" multiple="true" required v-if="isEditable">
+                        <option v-for="option in recipients" v-bind:value="option.name" v-bind:key="option">
+                            {{option.name}}
+                        </option>
+                    </select>
+                    <div class="names">
+                        <div v-for="name in receiverNames" :key="name" class="name">
+                            {{ name }}
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="file">Link to File</label>
+                    <input name="link"  type="url" v-model="link" :readonly="!isEditable"/>
+                </div>
+                <div>
+                    <label for="file">File Uploaded</label>
+                    <input name="file" class="custom-file-input" id="file" type="file" @change="handleFileUpload( $event )" v-if="isEditable"/>
+                </div>
+                <div class="buttons">
+                    <div v-if="!(isEditable || changeStatus)" class="buttons">
+                        <button @click="handleChange" id="change-status">Change Asset Status</button>
+                        <button @click="handleEdit" id="edit-btn" v-if="isSender">Edit Information</button>
+                    </div>
+                    <div v-if="isEditable || changeStatus" class="buttons">
+                        <button @click="handleCancel" id="cancel">Cancel</button>
+                        <button type="submit" class="change-btn" :disabled="(file === '' && link === '')">Confirm Changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="feedback"></div>
     </div>
-    <div v-if="isModalVisible">
-        <AssetForm :name="name" :recipients="recipients" @close="closeModal"></AssetForm>
-    </div>
-  </div>
-
+</div>
 </template>
 
 <script>
-import AssetForm from "../components/AssetForm.vue"
 import store from '../store/store'
+import Asset from '../services/asset.service'
+
 
 export default {
-  name: "Asset",
-  components: {
-    AssetForm
-  },
+  name: 'Asset',
   data(){
-    return{
-        name: store.getters.userName, 
-        isModalVisible: false,
-        recipients: store.getters.members
-    }
+      return {
+        changeStatus: false,
+        isEditable: false,
+        isSender: true,
+        title: "",
+        description: "",
+        senderName: "",
+        position: store.getters.position,
+        status: "",
+        initalStatus: "",
+        file: "",
+        type: "",
+        link: "http",
+        reviewDate: "",
+        receivers: [],
+        receiverNames: [],
+        error: "",
+        options: ["Submitted", "Pending", "Approved", "Completed"],
+        recipients: store.getters.members,
+        assetID: this.$route.params.id
+      }
   },
-  // beforeRouteEnter (to, from, next) {
-  //   getPost(to.params.id, (err, post) => {
-  //     next(vm => vm.setData(err, post))
-  //   })
-  // },
-  
-  // beforeRouteUpdate (to, from, next) {
-  //   this.post = null
-  //   getPost(to.params.id, (err, post) => {
-  //     this.setData(err, post)
-  //     next()
-  //   })
-  // },
-  methods: {
-    showModal() {
-        this.isModalVisible = true;
-    },
-    closeModal() {
-        this.isModalVisible = false;
-    }
+  mounted(){
+    Asset.getAsset(store.getters.token, this.assetID)
+        .then(res => {
+            console.log(res)
+            this.title = res.title
+            this.description = res.description
+            this.status = Asset.capitaliseFirstLetter(res.status)
+            this.initalStatus = this.status
+            this.link = res.assetLink
+            this.isSender = store.getters.userInfo.user._id === res.sender
+            console.log(store.getters.userInfo)
+            // reviewDate: "",
+            console.log(this.recipients)
+            this.recipients.forEach(recipient => {
+                if(res.recipients.includes(recipient._id)){
+                    this.receivers.push(recipient._id)
+                    this.receiverNames.push(recipient.name)
+                }
 
+                if(recipient._id === res.sender){
+                    this.senderName = recipient.name
+                }
+            });
+
+        })
+  },
+  methods: {
+    handleSubmit(){
+        let confirm = window.confirm("Do you want to make these changes?")
+        
+        if(confirm){
+            this.recipients.forEach(recipient => {
+                if(this.receiverNames.includes(recipient.name)){
+                    this.receivers.push(recipient._id)
+                }
+            });
+
+            let asset = {
+                status: this.status,
+                file: this.file,
+                type: this.type,
+                title: this.title,
+                description: this.description,
+                sender: this.senderName,
+                reviewDate: this.reviewDate,
+                link: this.link,
+                recepient: this.receivers
+            }
+
+            Asset.uplaodChanges(store.getters.token, this.assetID, asset)
+                .then(res => {
+                    console.log(res)
+                    this.isEditable = false
+                    this.changeStatus = false
+                })
+        }
+
+       
+        
+    },
+    handleEdit(){
+        this.isEditable = true
+    },
+
+    handleCancel(){
+        this.isEditable = false
+        this.changeStatus = false
+        this.status = this.initalStatus
+    },
+
+    handleChange(){
+        this.changeStatus = true
+    }
   }
-};
+}
+
 </script>
 
 <style scoped>
-.container{
-     padding: 10px;
+h2{
+    font-weight: bolder;
+    margin-bottom: 0px;
+    color: #865cff;
 }
-.header{
+
+label{
+    font-weight: 500;
+}
+
+input:read-only, textarea:read-only{
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.create-btn{
-    height: 45px;
-    color: #ffffff;
-    background-color: #865cff;
-    text-align: center;
-    border: none;
-    border-radius: 8px;
     font-size: 16px;
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    padding: 10px;
+    border: none;
+    color: #865cff;
+    font-weight: bold;
+    padding: 0;
 }
 
-.create-btn:hover{
-  background-color: #581eff;
-  color: #ffffff;
-  border: 1px solid #581eff;
+textarea:read-only{
+    margin-top: 5px;
+    height: 50px;
+}
+
+input, select, textarea{
+    display: block;
+    width: 95%;
+    height: 40px;
+    border: 1px solid #d5c7ff;
+    border-radius: 8px;
+    padding: 0 10px;
+}
+
+.asset-content{
+    border-right: 1px solid rgba(0, 0,0, 0.25);
+}
+
+textarea{
+    height: 70px;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+}
+
+form div{
+    margin: 15px 0;
+}
+
+.file-input{
+    margin-bottom: 0;
+}
+
+.asset-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.buttons{
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -8px;
+    margin-right: 10px;
+}
+
+.buttons button{
+    border: 1px solid #865cff;
+    border-radius: 8px;
+    height: 40px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px 10px;
+    background: #865cff;
+    color: #ffffff;
+}
+
+button:disabled{
+    background: #d5c7ff;
+    border: 1px solid #d5c7ff;
+}
+
+#cancel, #change-status{
+    background: none;
+    color: #865cff;
+}
+
+.custom-file-input {
+    border: none;
+    padding-top: 10px;
+
+}
+
+select[multiple] {
+    padding-top: 5px ;
+    height: 4rem;
+}
+
+.names{
+   display: flex;
+}
+
+.name{
+   height: 35px;
+   border: 1px solid #d5c7ff;
+   border-radius: 8px;
+   background-color: #d5c7ff;
+   color: #865cff;
+   font-weight: bold;
+   padding: 0 15px;
+   margin: 0 5px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
 }
 </style>

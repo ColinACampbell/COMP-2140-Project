@@ -32,7 +32,7 @@
                 <label for="file">Link to File</label>
                 <input name="link"  type="url" v-model="link"/>
             </div>
-            <div>
+            <div class="file-input">
                 <label for="file">File Upload</label>
                 <input name="file" class="custom-file-input" id="file" type="file" @change="handleFileUpload( $event )"/>
             </div>
@@ -47,41 +47,41 @@
 
 <script>
 import Form from "../services/form.service"
+import store from '../store/store'
 
 export default {
   name: 'Asset',
-  props: [
-    'name', 'recipients'
-  ],
   data(){
     return {
         title: "",
         description: "",
-        senderName: this.name,
+        senderName: store.getters.userName,
         file: "",
         type: "",
         link: "",
         reviewDate: "",
+        recipients: store.getters.members,
         receivers: [],
         receiverNames: [],
-        error: ""
+        error: "",
+        docID: ""
     } 
   },
   methods:{
     handleFileUpload( event ){
         this.file = event.target.files[0];
         this.type = this.file.type;
+        // this.docID = this.file.id
     },
     close() {
         this.$emit('close');
     },
     handleSubmit(){
-        this.recipients.forEach(member => {
-            if(this.receiverNames.includes(member.name)){
-                this.receivers.push(member._id)
+        this.recipients.forEach(recipient => {
+            if(this.receiverNames.includes(recipient.name)){
+                this.receivers.push(recipient._id)
             }
         });
-
         let asset = {
             file: this.file,
             type: this.type,
@@ -152,9 +152,15 @@ textarea{
 form div{
     margin: 10px 0;
 }
+
+.file-input{
+    margin-bottom: 0;
+}
+
 .buttons{
     display: flex;
     justify-content: flex-end;
+    margin-top: -10px;
 }
 
 .buttons button{
@@ -165,7 +171,7 @@ form div{
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 10px;
+    margin: 0px 10px;
     background: #865cff;
     color: #ffffff;
 }
@@ -174,6 +180,7 @@ button:disabled{
     background: #d5c7ff;
     border: 1px solid #d5c7ff;
 }
+
 #cancel{
     background: none;
     color: #865cff;
@@ -181,7 +188,8 @@ button:disabled{
 
 .custom-file-input {
     border: none;
-    padding: 10px 0;
+    padding-top: 10px;
+
 }
 
 select[multiple] {

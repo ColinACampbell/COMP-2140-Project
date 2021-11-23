@@ -4,6 +4,7 @@
             <div>
                 <img id="logo" src="../assets/ipp-white.png" alt="IPP Logo"/>
             </div>
+            <div class="greetings">Hello, {{ name }}</div>
             <ul class="nav-list">
                 <li class="nav-item" :class="current === 'Home' ? 'active' : ''">
                     <router-link to="/dashboard" @click="current = 'Home'">
@@ -12,7 +13,7 @@
                     </router-link>
                 </li>
                 <li class="nav-item" :class="current === 'Asset' ? 'active' : ''">
-                    <router-link to="/dashboard/asset" @click="current = 'Asset'">
+                    <router-link to="/dashboard/assets" @click="current = 'Asset'">
                         <img src="../assets/asset.svg" alt="Asset Icon">
                          <span>Assets</span>
                     </router-link>
@@ -43,13 +44,14 @@
 </template>
 
 <script>
-
+import store from '../store/store'
 export default {
   name: 'Dashboard',
 
   data(){
     return {
-        current: this.$route.name
+        current: this.$route.name,
+        name: store.getters.userName
     }
   }
 }
@@ -118,6 +120,12 @@ a{
 .logout{
     padding: 30px;
     margin-top: 200px;
+}
+
+.greetings{
+    color: #fff;
+    font-weight: bolder;
+    padding-left: 30px ;
 }
 
 </style>

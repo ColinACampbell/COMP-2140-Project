@@ -68,7 +68,7 @@ exports.uploadAsset = (req, res) => {
         // attributes of the document and should correspond with mango
         fileData: fileData, // base64 format
         type, // Content type
-        name,
+        title: name, //ERROR
         description: description,
         sender, // the id of the sender
         assetLink: assetLink, // The link to the asset

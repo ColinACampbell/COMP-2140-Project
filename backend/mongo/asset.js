@@ -13,6 +13,7 @@ const assetSchema = new Schema({
     title: String,
     description: String,
     assetLink: String,
+    reviewBy: String,
     sender: { type: Schema.Types.ObjectId, ref: 'User' },
     recipients: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     history : [assetStatusHistorySchema],

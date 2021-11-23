@@ -23,12 +23,13 @@ export default {
     },
 
     async processAsset(info){
-
+        console.log(info)
         let { file, type, title, description, sender, link, recepient, reviewDate } = info
 
         let encodedFile = ""
         if(file){
-            encodedFile = this.toBase64(file)
+            encodedFile = await this.toBase64(file)
+            
         }
 
         let token = store.getters.token
@@ -44,7 +45,7 @@ export default {
                         description: description,
                         sender: sender,
                         assetLink: link,
-                        recepients: recepient,
+                        recipients: recepient,
                         reviewDate: reviewDate
                     }
                 ),
@@ -59,7 +60,7 @@ export default {
         if(res.status === 201){
             return "Successful"
         }
-        
+
         return "Failed to upload"
         
     }

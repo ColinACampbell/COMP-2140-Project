@@ -15,7 +15,8 @@ const store = new createStore({
       userName: state => state.userInfo.user.name,
       userInfo: state => state.userInfo,
       members: state => state.userInfo.members,
-      token: state => state.userInfo.token
+      token: state => state.userInfo.token,
+      position: state => state.userInfo.user.position
   },
   mutations: {
     updateUserInfo(state, payload){

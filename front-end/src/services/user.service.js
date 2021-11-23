@@ -21,6 +21,8 @@ export default {
         if(res.status === 401){
             return "Invalid login"
         }else{
+            // sessionStorage.setItem("login-token", JSON.stringify(data))
+            console.log(data)
             return data
         }
        

@@ -4,7 +4,9 @@ import Signup from "../views/Signup.vue"
 import Login from "../views/Login.vue"
 import Dashboard from "../views/Dashboard.vue"
 import Home from "../views/Home.vue"
+import Assets from "../views/Assets.vue"
 import Asset from "../views/Asset.vue"
+import AssetsView from '../views/AssetsView.vue'
 
 const routes = [
   {
@@ -30,10 +32,24 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
-        path: "/dashboard/asset",
-        name: "Asset",
-        component: Asset,
-        meta: { requiresAuth: true }
+        path: "/dashboard/assets",
+        name: "AssetsView",
+        component: AssetsView,
+        meta: { requiresAuth: true },
+        children: [
+          {
+            path: "",
+            name: "Assets",
+            component: Assets,
+            meta: { requiresAuth: true }
+          },
+          {
+            path: "/dashboard/assets/asset/:id",
+            name: "Asset",
+            component: Asset,
+            meta: { requiresAuth: true }
+          }
+        ]
       }
     ]
 
@@ -54,7 +70,7 @@ const redirectToLogin = route => {
 };
 
 router.beforeEach((to) => {
-  // let localUserData = JSON.parse(sessionStorage.getItem('login-token'))
+  // let sessionUserData = JSON.parse(sessionStorage.getItem('login-token'))
   let localUserData = store.state.userInfo;
   let userData = localUserData || {}
   let userIsAuthenticated = userData.token !== "" && userData.token !== undefined
