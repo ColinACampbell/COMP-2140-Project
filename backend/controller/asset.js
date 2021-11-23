@@ -93,12 +93,13 @@ exports.uploadAsset = (req, res) => {
 }
 
 
-exports.changeAssetStatus = async (req, res) => {
+exports.updateAsset = async (req, res) => {
     const userID = req.user_session._id;
     const assetId = req.params.id;
-    const { status } = req.body;
 
-    if (status == undefined || status == null)
+    const { status, assetLink, description, type, fileData, name, recipients, reviewedBy } = req.body;
+
+    if (status == undefined || status == undefined)
         res.status(400).json({ message: "Invalid Status" })
     else {
         const asset = await Asset.findOne({
@@ -110,7 +111,17 @@ exports.changeAssetStatus = async (req, res) => {
                 select: "name email _id"
             }
         })
+
         asset.status = status;
+        asset.title = name;
+        asset.assetLink = assetLink;
+        asset.description = description;
+        asset.type = type;
+        asset.fileData = fileData;
+        asset.recipients = [];
+        asset.recipients.push(recipients);
+        asset.reviewdBy = reviewedBy;
+
         asset.history.push(
             {
                 time: new Date().getTime(),
