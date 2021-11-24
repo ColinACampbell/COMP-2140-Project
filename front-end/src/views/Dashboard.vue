@@ -19,7 +19,7 @@
                     </router-link>
                 </li>
                 <li class="nav-item" :class="current === 'Notice' ? 'active' : ''">
-                    <router-link to="" @click="current = 'Notice'">
+                    <router-link to="/dashboard/notices" @click="current = 'Notice'">
                         <img src="../assets/notices.svg" alt="Notice icon">
                          <span>Notices</span>
                     </router-link>

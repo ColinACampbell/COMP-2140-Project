@@ -7,6 +7,7 @@ import Home from "../views/Home.vue"
 import Assets from "../views/Assets.vue"
 import Asset from "../views/Asset.vue"
 import AssetsView from '../views/AssetsView.vue'
+import Notice from "../views/Notice.vue"
 
 const routes = [
   {
@@ -50,6 +51,12 @@ const routes = [
             meta: { requiresAuth: true }
           }
         ]
+      },
+      {
+        path: "/dashboard/notices",
+        name: "Notice",
+        component: Notice,
+        meta: { requiresAuth: true }
       }
     ]
 
@@ -70,7 +77,6 @@ const redirectToLogin = route => {
 };
 
 router.beforeEach((to) => {
-  // let sessionUserData = JSON.parse(sessionStorage.getItem('login-token'))
   let localUserData = store.state.userInfo;
   let userData = localUserData || {}
   let userIsAuthenticated = userData.token !== "" && userData.token !== undefined

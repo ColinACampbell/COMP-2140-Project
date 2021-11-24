@@ -23,7 +23,6 @@ export default {
     },
 
     async processAsset(info){
-        console.log(info)
         let { file, type, title, description, sender, link, recepient, reviewDate } = info
 
         let encodedFile = ""
@@ -63,5 +62,25 @@ export default {
 
         return "Failed to upload"
         
+    },
+    async processNotice(notice, token){
+
+        let res = await fetch("http://localhost:3000/notice/",
+            {
+                method: "POST",
+                body: JSON.stringify(notice),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
+                },
+                
+            }
+        )
+            
+        if(res.status === 201){
+            return "Successful"
+        }
+
+        return "Failed to upload"
     }
 }

@@ -38,6 +38,7 @@
           </tr>
         </tbody>
       </table>
+      <div v-if="assetsSent.length == 0" class="no-view">You have not created any asset as yet.</div>
     </div>
     <div>
       <h2>Assets Recieved</h2>
@@ -68,6 +69,7 @@
           </tr>
         </tbody>
       </table>
+      <div v-if="assetsRecieved.length == 0" class="no-view">There are not assets for you to view at the moment.</div>
     </div>
   </div>
 
@@ -122,7 +124,6 @@ export default {
           } else {
             this.assetsSent = res.sent
             this.assetsRecieved = res.recieved
-            console.log(this.assetsSent)
           }
         })
     }
@@ -203,5 +204,11 @@ a{
 td ul{
   list-style: none;
   padding: 0;
+}
+
+.no-view{
+  text-align: center;
+  color: #865cff;
+  margin-top: 10px;
 }
 </style>

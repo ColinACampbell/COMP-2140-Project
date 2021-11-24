@@ -30,6 +30,18 @@ export default {
 
     async signup (info) {
         // fetch post request
+        let { name, email, position } = info
+
+        if(position === "Client"){
+            if(name.slice(0,3) !== "IPP"){
+                return "Invalid"
+            }
+        } else {
+            if(!email.includes("@itspixelperfect.com")){
+                return "Invalid"
+            }
+        }
+
         let res = await fetch("http://localhost:3000/user/",
             {
                 method: "POST",

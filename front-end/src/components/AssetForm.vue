@@ -71,7 +71,6 @@ export default {
     handleFileUpload( event ){
         this.file = event.target.files[0];
         this.type = this.file.type;
-        // this.docID = this.file.id
     },
     close() {
         this.$emit('close');
