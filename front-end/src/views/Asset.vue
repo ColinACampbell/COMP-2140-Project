@@ -1,16 +1,16 @@
 <template>
 <div class="asset">
-    <h2>{{ updatedAssetInfo.title }}</h2>
+    <h2>{{ title }}</h2>
     <div class="asset-container">
         <div class="asset-content"> 
             <form id="create-issue-form" method="post" @submit.prevent="handleSubmit">
                 <div>
                     <label for="title">Title</label>
-                    <input type="text" name="title" id="title" v-model="updatedAssetInfo.title" required :readonly="!isEditable"/>
+                    <input type="text" name="title" id="title" v-model="title" required :readonly="!isEditable"/>
                 </div>
                 <div>
                     <label for="description">Description</label>
-                    <textarea name="description" id="description" cols="30" rows="10" v-model="updatedAssetInfo.description" :readonly="!isEditable" required></textarea>
+                    <textarea name="description" id="description" cols="30" rows="10" v-model="description" :readonly="!isEditable" required></textarea>
                 </div>
                 <div>
                     <label for="sender">Sender</label>
@@ -18,29 +18,29 @@
                 </div>
                 <div>
                     <label for="status">Asset Status</label>
-                    <select name="status" id="status" v-model="updatedAssetInfo.status" required v-if="changeStatus || isEditable">
-                        <option v-for="option in options" v-bind:value="option" v-bind:key="option" :selected="option === updatedAssetInfo.status">
+                    <select name="status" id="status" v-model="status" required v-if="changeStatus || isEditable">
+                        <option v-for="option in options" v-bind:value="option" v-bind:key="option" :selected="option === status">
                             {{option}}
                         </option>
                     </select>
-                    <div v-if="!isEditable && !changeStatus" :class="updatedAssetInfo.status">{{ updatedAssetInfo.status }}</div>
+                    <div v-if="!isEditable && !changeStatus" :class="status">{{ status }}</div>
                 </div>
                 <div>
                     <label for="recipient">Recipient(s)</label>
-                    <select name="positions" id="positions" v-model="updatedAssetInfo.receiverNames" multiple="true" required v-if="isEditable">
+                    <select name="positions" id="positions" v-model="receiverNames" multiple="true" required v-if="isEditable">
                         <option v-for="option in recipients" v-bind:value="option.name" v-bind:key="option">
                             {{option.name}}
                         </option>
                     </select>
                     <div class="names">
-                        <div v-for="name in updatedAssetInfo.receiverNames" :key="name" class="name">
+                        <div v-for="name in receiverNames" :key="name" class="name">
                             {{ name }}
                         </div>
                     </div>
                 </div>
                 <div>
                     <label for="file">Link to File</label>
-                    <input name="link"  type="url" v-model="updatedAssetInfo.link" :readonly="!isEditable"/>
+                    <input name="link"  type="url" v-model="link" :readonly="!isEditable"/>
                 </div>
                 <div>
                     <label for="file">File Uploaded</label>
@@ -75,10 +75,18 @@ export default {
         changeStatus: false,
         isEditable: false,
         isSender: true,
-        initialAssetInfo: {},
-        updatedAssetInfo: {},
+        title: "",
+        description: "",
         senderName: "",
         position: store.getters.position,
+        status: "",
+        initalStatus: "",
+        file: "",
+        type: "",
+        link: "http",
+        reviewDate: "",
+        receivers: [],
+        receiverNames: [],
         error: "",
         options: ["Submitted", "Pending", "Approved", "Completed"],
         recipients: store.getters.members,
@@ -89,27 +97,19 @@ export default {
     Asset.getAsset(store.getters.token, this.assetID)
         .then(res => {
             console.log(res)
-            this.initialAssetInfo = res
-
-            let { assetLink, description, sender, status, fileData, title } = res
-            this.updatedAssetInfo.status = Asset.capitaliseFirstLetter(status)
-            this.updatedAssetInfo.file = fileData
-            this.updatedAssetInfo.title = title
-            this.updatedAssetInfo.description = description
-            this.updatedAssetInfo.sender = sender
-            this.updatedAssetInfo.link = assetLink
-            this.initialAssetInfo.receivers = []
-            this.initialAssetInfo.receiverNames = []
-            this.updatedAssetInfo.recipient = []
-            this.updatedAssetInfo.receiverNames = []
+            this.title = res.title
+            this.description = res.description
+            this.status = Asset.capitaliseFirstLetter(res.status)
+            this.initalStatus = this.status
+            this.link = res.assetLink
             this.isSender = store.getters.userInfo.user._id === res.sender
-            
+            console.log(store.getters.userInfo)
+            // reviewDate: "",
+            console.log(this.recipients)
             this.recipients.forEach(recipient => {
                 if(res.recipients.includes(recipient._id)){
-                    this.initialAssetInfo.receivers.push(recipient._id)
-                    this.initialAssetInfo.receiverNames.push(recipient.name)
-                    this.updatedAssetInfo.recipient.push(recipient._id)
-                    this.updatedAssetInfo.receiverNames.push(recipient.name)
+                    this.receivers.push(recipient._id)
+                    this.receiverNames.push(recipient.name)
                 }
 
                 if(recipient._id === res.sender){
@@ -125,12 +125,24 @@ export default {
         
         if(confirm){
             this.recipients.forEach(recipient => {
-                if(this.updatedAssetInfo.receiverNames.includes(recipient.name)){
-                    this.updatedAssetInfo.receivers.push(recipient._id)
+                if(this.receiverNames.includes(recipient.name)){
+                    this.receivers.push(recipient._id)
                 }
             });
 
-            Asset.uplaodChanges(store.getters.token, this.assetID, this.updatedAssetInfo)
+            let asset = {
+                status: this.status,
+                file: this.file,
+                type: this.type,
+                title: this.title,
+                description: this.description,
+                sender: this.senderName,
+                reviewDate: this.reviewDate,
+                link: this.link,
+                recepient: this.receivers
+            }
+
+            Asset.uplaodChanges(store.getters.token, this.assetID, asset)
                 .then(res => {
                     console.log(res)
                     this.isEditable = false
@@ -141,11 +153,6 @@ export default {
        
         
     },
-    handleFileUpload( event ){
-        this.updatedAssetInfo.file = event.target.files[0];
-        this.updatedAssetInfo.type = this.updatedAssetInfo.file.type;
-    },
-
     handleEdit(){
         this.isEditable = true
     },
@@ -153,38 +160,11 @@ export default {
     handleCancel(){
         this.isEditable = false
         this.changeStatus = false
-        this.revertChanges(this.initialAssetInfo)
+        this.status = this.initalStatus
     },
 
     handleChange(){
         this.changeStatus = true
-    },
-
-    revertChanges(obj){
-        let { assetLink, description, sender, status, fileData, title } = obj
-            this.updatedAssetInfo.status = Asset.capitaliseFirstLetter(status)
-            this.updatedAssetInfo.file = fileData
-            this.updatedAssetInfo.title = title
-            this.updatedAssetInfo.description = description
-            this.updatedAssetInfo.sender = sender
-            this.updatedAssetInfo.link = assetLink
-            this.initialAssetInfo.receivers = []
-            this.initialAssetInfo.receiverNames = []
-            this.updatedAssetInfo.recipient = []
-            this.updatedAssetInfo.receiverNames = []
-
-            this.recipients.forEach(recipient => {
-                if(obj.recipients.includes(recipient._id)){
-                    this.initialAssetInfo.receivers.push(recipient._id)
-                    this.initialAssetInfo.receiverNames.push(recipient.name)
-                    this.updatedAssetInfo.recipient.push(recipient._id)
-                    this.updatedAssetInfo.receiverNames.push(recipient.name)
-                }
-
-                if(recipient._id === obj.sender){
-                    this.senderName = recipient.name
-                }
-            });
     }
   }
 }
