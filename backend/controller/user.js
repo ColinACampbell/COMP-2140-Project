@@ -5,6 +5,14 @@ const jwtUtil = require('./../utils/jwt')
 exports.authenticate = async (req, res) => {
     const { email, password } = req.body;
 
+    if (email == undefined || password == undefined )
+    {
+        res.status(400).json({
+            message: "Email and password needed"
+        });
+        return;
+    }
+
     if (email.length === 0 || password.length === 0) {
         res.status(400).json({})
         return;

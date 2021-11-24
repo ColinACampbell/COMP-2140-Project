@@ -1,9 +1,9 @@
 const crypto = require('crypto');
 const { Asset, AssetStatusHistory } = require("../mongo/asset");
-//const {mangoose }= require("mangoose");
+
 exports.getAssets = async (req, res) => {
 
-    const selectedFields = "assetLink, description, type, name, recipients, sender"
+    const selectedFields = "assetLink description type name recipients sender title status reviewedBy"
     const populateFields = [{
         path: "recipients",
         select: "name email _id"
@@ -47,7 +47,7 @@ exports.getAsset = (req, res) => {
     }).exec((err, asset) => {
         if (err || !asset) {
             res.status(400).json({
-                message: "Lookes Like Something when wrong"
+                message: "Looks Like Something when wrong"
             })
         } else {
             asset.fileData = undefined
@@ -60,7 +60,7 @@ exports.getAsset = (req, res) => {
 exports.uploadAsset = (req, res) => {
 
     console.log(req.user_session._id)
-    const { assetLink, description, type, fileData, name, recipients } = req.body;
+    const { assetLink, description, type, fileData, name, recipients, reviewedBy } = req.body;
 
     const sender = req.user_session._id;
 
@@ -68,12 +68,13 @@ exports.uploadAsset = (req, res) => {
         // attributes of the document and should correspond with mango
         fileData: fileData, // base64 format
         type, // Content type
-        title: name, //ERROR
+        title:name,
         description: description,
         sender, // the id of the sender
         assetLink: assetLink, // The link to the asset
         recipients, // array of id's of the recipients ['...','...']
-        status: "submitted"
+        status: "submitted",
+        reviewedBy
     }
     Asset.create(asset, async function (err, asset) {
         if (err) {
@@ -90,17 +91,45 @@ exports.uploadAsset = (req, res) => {
         }
     })
 }
-// 1. get asset related to a user. i.e a person who sent the asset or in the receipent list.
-// will be sending two list, senders and receivers.
 
-/*exports.getAsset = (req,res)=>{
-    assetJson = assetModel;
-    fetchData:function(callback){
-        const assetData=assetJson.find({})
-        assetData.exec(function(err, data){
-            if(err) throw err;
-            return callback(data);
+
+exports.updateAsset = async (req, res) => {
+    const userID = req.user_session._id;
+    const assetId = req.params.id;
+
+    const { status, assetLink, description, type, fileData, name, recipients, reviewedBy } = req.body;
+
+    if (status == undefined || status == undefined)
+        res.status(400).json({ message: "Invalid Status" })
+    else {
+        const asset = await Asset.findOne({
+            _id: assetId,
+        }).populate({
+            path: "history",
+            populate: {
+                path: "updatedBy",
+                select: "name email _id"
+            }
         })
-        res.render('json',{assetData:data});
+
+        asset.status = status;
+        asset.title = name;
+        asset.assetLink = assetLink;
+        asset.description = description;
+        asset.type = type;
+        asset.fileData = fileData;
+        asset.recipients = [];
+        asset.recipients.push(recipients);
+        asset.reviewdBy = reviewedBy;
+
+        asset.history.push(
+            {
+                time: new Date().getTime(),
+                status: status,
+                updatedBy: userID
+            })
+        asset.save();
+        asset.fileData = null;
+        res.status(200).json(asset)
     }
-}*/
+}
