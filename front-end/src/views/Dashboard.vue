@@ -25,7 +25,7 @@
                     </router-link>
                 </li>
                 <li class="nav-item" :class="current === 'Meeting' ? 'active' : ''">
-                    <router-link to="" @click="current = 'Meeting'" >
+                    <router-link to="/dashboard/meeting_alerts" @click="current = 'Meeting'" >
                         <img src="../assets/meeting.svg" alt="Meeting icon">
                          <span>Meeting Alerts</span>
                     </router-link>
@@ -63,12 +63,17 @@ export default {
     display: grid;
     grid-template-columns: 250px 1fr;
     gap: 20px;
+    height: 100vh;
 }
 .side-nav{
   background: #865cff;
   width: 250px;
   height: 100vh;
   color: #fff;
+}
+
+.content{
+    overflow-y: scroll;
 }
 
 #logo{

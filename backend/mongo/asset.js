@@ -18,7 +18,7 @@ const assetSchema = new Schema({
     recipients: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     history : [assetStatusHistorySchema],
     status: String,
-    reviewedBy: String // is a date
+    // reviewedBy: String // is a date  Omit because you have reviewBy at the top
 })
 
 //exports.AssetStatusHistory = mongooseConn.model('AssetStatusHistory',assetStatusHistorySchema)

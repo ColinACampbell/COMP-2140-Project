@@ -105,6 +105,7 @@ textarea{
     height: 90px;
     font-family: Avenir, Helvetica, Arial, sans-serif;
     font-size: 14px;
+    resize: none;
 }
 
 label{

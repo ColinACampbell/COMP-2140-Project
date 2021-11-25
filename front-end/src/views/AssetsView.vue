@@ -27,22 +27,22 @@ export default {
 }
 
 .Submitted{
-    color: #dc6f26;
-    border: 1px solid #dc6f26;
+    color: #f04438;
+    background:  #fee4e2;
 }
 
 .Pending{
-    color: #139e4d;
-    border: 1px solid #139e4d;
+    color: #12b76a;
+    background: #d1fadf;
 }
 
 .Approved{
-    color: #1f7ef1;
-    border: 1px solid #1f7ef1;
+    color: #2e90fa;
+    background: #d1e9ff;
 }
 
 .Completed{
-    color: #ebca11;
-    border: 1px solid #ebca11;
+    color: #f79009;
+    background: #fef0c7;
 }
 </style>

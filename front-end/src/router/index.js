@@ -8,6 +8,7 @@ import Assets from "../views/Assets.vue"
 import Asset from "../views/Asset.vue"
 import AssetsView from '../views/AssetsView.vue'
 import Notice from "../views/Notice.vue"
+import MeetingAlerts from '../views/MeetingAlerts.vue'
 
 const routes = [
   {
@@ -57,7 +58,14 @@ const routes = [
         name: "Notice",
         component: Notice,
         meta: { requiresAuth: true }
-      }
+      },
+      {
+        path: "/dashboard/meeting_alerts",
+        name: "MeetingAlerts",
+        component: MeetingAlerts,
+        meta: { requiresAuth: true }
+      },
+
     ]
 
   }

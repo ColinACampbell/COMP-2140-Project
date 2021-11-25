@@ -31,7 +31,6 @@ export default {
     },
 
     async getAsset(token, id){
-        // console.log(id, "ID")
         let res = await fetch(`http://localhost:3000/asset/${id}`,
         {
             method: "GET",
@@ -48,19 +47,16 @@ export default {
         return "Failed to fetch"
        
     },
-
-    async uplaodChanges(token, id, info){
-        let { file } = info
-
+    
+    async uploadChanges(token, id, info){
+        let { fileData } = info
         let encodedFile = ""
-        if(file){
-            encodedFile = await this.toBase64(file)
-            
+        if(fileData){
+            encodedFile = await this.toBase64(fileData)   
         }
 
-        info.file = encodedFile
-
-        let res = await fetch(`http://localhost:3000/asset/`,
+        info.fileData = encodedFile
+        let res = await fetch(`http://localhost:3000/asset/${id}`,
         {
             method: "PUT",
             body: JSON.stringify(info),

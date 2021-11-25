@@ -12,9 +12,13 @@
                     <label for="description">Description</label>
                     <textarea name="description" id="description" cols="30" rows="10" v-model="description" :readonly="!isEditable" required></textarea>
                 </div>
-                <div>
+                <div v-if="!isEditable">
                     <label for="sender">Sender</label>
                     <input type="text" name="sender" id="sender" v-model="senderName" readonly/>
+                </div>
+                <div>
+                <label for="reviewDate">Reviewed by</label>
+                    <input type="date" name="reviewDate" id="reviewDate" v-model="reviewDate" required :readonly="!isEditable" />
                 </div>
                 <div>
                     <label for="status">Asset Status</label>
@@ -58,7 +62,8 @@
                 </div>
             </form>
         </div>
-        <div class="feedback"></div>
+        <div class="feedback">
+        </div>
     </div>
 </div>
 </template>
@@ -80,7 +85,6 @@ export default {
         senderName: "",
         position: store.getters.position,
         status: "",
-        initalStatus: "",
         file: "",
         type: "",
         link: "http",
@@ -93,22 +97,17 @@ export default {
         assetID: this.$route.params.id
       }
   },
-  mounted(){
+  beforeMount(){
     Asset.getAsset(store.getters.token, this.assetID)
         .then(res => {
-            console.log(res)
             this.title = res.title
             this.description = res.description
             this.status = Asset.capitaliseFirstLetter(res.status)
-            this.initalStatus = this.status
             this.link = res.assetLink
             this.isSender = store.getters.userInfo.user._id === res.sender
-            console.log(store.getters.userInfo)
-            // reviewDate: "",
-            console.log(this.recipients)
+            this.reviewDate = res.reviewBy
             this.recipients.forEach(recipient => {
                 if(res.recipients.includes(recipient._id)){
-                    this.receivers.push(recipient._id)
                     this.receiverNames.push(recipient.name)
                 }
 
@@ -122,7 +121,6 @@ export default {
   methods: {
     handleSubmit(){
         let confirm = window.confirm("Do you want to make these changes?")
-        
         if(confirm){
             this.recipients.forEach(recipient => {
                 if(this.receiverNames.includes(recipient.name)){
@@ -132,19 +130,22 @@ export default {
 
             let asset = {
                 status: this.status,
-                file: this.file,
+                fileData: this.file,
                 type: this.type,
                 title: this.title,
                 description: this.description,
                 sender: this.senderName,
-                reviewDate: this.reviewDate,
-                link: this.link,
-                recepient: this.receivers
+                reviewBy: this.reviewDate,
+                assetLink: this.link,
+                recipients: this.receivers
             }
 
-            Asset.uplaodChanges(store.getters.token, this.assetID, asset)
+            Asset.uploadChanges(store.getters.token, this.assetID, asset)
                 .then(res => {
-                    console.log(res)
+                    alert(res === "Failed to update" ? 
+                        "Asset failed to update. Try Again." :
+                        "Asset was succesfully updated!"
+                    )
                     this.isEditable = false
                     this.changeStatus = false
                 })
@@ -160,11 +161,36 @@ export default {
     handleCancel(){
         this.isEditable = false
         this.changeStatus = false
-        this.status = this.initalStatus
+        this.revertChanges()
     },
 
     handleChange(){
         this.changeStatus = true
+    },
+
+    revertChanges(){
+        Asset.getAsset(store.getters.token, this.assetID)
+        .then(res => {
+            this.title = res.title
+            this.description = res.description
+            this.status = Asset.capitaliseFirstLetter(res.status)
+            this.initalStatus = this.status
+            this.link = res.assetLink
+            this.receivers = []
+            this.receiverNames = []
+            this.reviewDate = res.reviewBy
+            this.isSender = store.getters.userInfo.user._id === res.sender
+            this.recipients.forEach(recipient => {
+                if(res.recipients.includes(recipient._id)){
+                    this.receiverNames.push(recipient.name)
+                }
+
+                if(recipient._id === res.sender){
+                    this.senderName = recipient.name
+                }
+            });
+
+        })
     }
   }
 }
@@ -203,6 +229,7 @@ input, select, textarea{
     border: 1px solid #d5c7ff;
     border-radius: 8px;
     padding: 0 10px;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 
 .asset-content{
@@ -211,7 +238,7 @@ input, select, textarea{
 
 textarea{
     height: 70px;
-    font-family: Avenir, Helvetica, Arial, sans-serif;
+    resize: none;
     font-size: 14px;
 }
 
@@ -231,7 +258,7 @@ form div{
 .buttons{
     display: flex;
     justify-content: flex-end;
-    margin-top: -8px;
+    margin-top: -6px;
     margin-right: 10px;
 }
 

@@ -23,31 +23,21 @@ export default {
     },
 
     async processAsset(info){
-        let { file, type, title, description, sender, link, recepient, reviewDate } = info
+        let { fileData } = info
 
         let encodedFile = ""
-        if(file){
-            encodedFile = await this.toBase64(file)
-            
+        if(fileData){
+            encodedFile = await this.toBase64(fileData)   
         }
+
+        info.fileData = encodedFile
 
         let token = store.getters.token
 
         let res = await fetch("http://localhost:3000/asset/",
             {
                 method: "POST",
-                body: JSON.stringify(
-                    {
-                        fileData: encodedFile,
-                        type: type,
-                        name: title,
-                        description: description,
-                        sender: sender,
-                        assetLink: link,
-                        recipients: recepient,
-                        reviewDate: reviewDate
-                    }
-                ),
+                body: JSON.stringify(info),
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + token,
