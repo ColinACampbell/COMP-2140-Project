@@ -14,7 +14,8 @@ const feedbackSchema = new Schema({
     asset_id: String,
     title: String,
     message: String,
-    replies : [feedbackReplySchema]
+    replies : [feedbackReplySchema],
+    asset :  { type: Schema.Types.ObjectId, ref: 'Asset' }
 })
 
 exports.Feedback = mongooseConn.model('Feedback', feedbackSchema)
