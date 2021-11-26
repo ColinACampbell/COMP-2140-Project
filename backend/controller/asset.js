@@ -38,14 +38,15 @@ exports.getAsset = (req, res) => {
     const assetID = req.params.id;
     Asset.findOne({
         _id: assetID
-    }).populate({
+    }).populate([{
         path: "history",
         populate: {
             path: "updatedBy",
             select: "name email _id"
         }
-    }).exec((err, asset) => {
+    }]).exec((err, asset) => {
         if (err || !asset) {
+            console.log(err)
             res.status(400).json({
                 message: "Looks Like Something when wrong"
             })
@@ -68,7 +69,11 @@ exports.uploadAsset = (req, res) => {
         // attributes of the document and should correspond with mango
         fileData: fileData, // base64 format
         type, // Content type
+<<<<<<< HEAD
         title,
+=======
+        title: name,
+>>>>>>> origin/feature-notice-management
         description: description,
         sender, // the id of the sender
         assetLink: assetLink, // The link to the asset

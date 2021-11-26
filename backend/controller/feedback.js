@@ -1,14 +1,14 @@
 const { Feedback, FeedbackReply } = require('./../mongo/feedback');
 
 exports.createFeedback = (req, res) => {
-    const { message, title } = req.body;
+    const { message, title, assetId } = req.body;
     const user = req.user_session;
     if (message === undefined || title === undefined || message.length === 0 || title.length === 0)
         res.status(400).json({
             message: "Invalid Parameters"
         })
     else {
-        Feedback.create({ postedBy: user._id, title, message })
+        Feedback.create({ postedBy: user._id, title, message, asset: assetId })
             .then((feedback) => {
                 res.status(201).json(feedback) // return the owner too
             }).catch((err) => {
@@ -30,6 +30,9 @@ exports.getAllFeedbacks = (req, res) => {
     }, {
         path: "postedBy",
         select: "name email"
+    }, {
+        path: "asset",
+        select: "title description",
     }])
         .exec((err, posts) => {
             res.status(200).json(posts)
@@ -63,17 +66,17 @@ exports.createFeedbackReply = async (req, res) => {
     const { message } = req.body;
     Feedback.findOne({
         _id: feedbackID
-    }).populate({
+    }).populate([{
         path: "replies",
         populate: {
             path: "postedBy",
             select: "name email"
         }
-    }).exec((err, feedback) => {
+    }]).exec((err, feedback) => {
         if (err) throw err;
         feedback.replies.push({
             message,
-            postedBy: req.user_session._id
+            postedBy: req.user_session._id,
         });
         feedback.save()
         res.status(200).json(feedback.replies)
