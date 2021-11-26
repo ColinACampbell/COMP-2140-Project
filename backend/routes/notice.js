@@ -8,5 +8,4 @@ router.post('/', noticeController.createNotice);
 router.get('/', noticeController.getNotices);
 router.get('/:id', noticeController.getNotice);
 
-
 module.exports = router;
