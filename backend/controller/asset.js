@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const mailTransport = require('./../email')
 const { Asset, AssetStatusHistory } = require("../mongo/asset");
 
 exports.getAssets = async (req, res) => {
@@ -88,6 +89,7 @@ exports.uploadAsset = (req, res) => {
                 updatedBy: req.user_session._id
             })
             asset.save()
+            //mailTransport.sendEmail("prontobol@gmail.com","New Asset","You have a new asset")
             res.status(201).json({}); // Send the '201' status code to let the user/client know the operation was successful
         }
     })
