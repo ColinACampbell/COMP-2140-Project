@@ -13,7 +13,7 @@
             </div>
             <div class="buttons">
                 <button @click="close" id="cancel">Cancel</button>
-                <button type="submit" class="create-btn" :disabled="(file === '' && link === '')">Create</button>
+                <button type="submit" class="create-btn">Create</button>
             </div>
         </form>
     </div>
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import Form from "../services/form.service"
+import FormService from "../services/form.service"
 import store from '../store/store'
 
 export default {
@@ -43,10 +43,9 @@ export default {
         if(confirm){
             let notice = {
                 title: this.title,
-                information: this.information,
-                creator: store.getters.userInfo.user._id
+                message: this.information,
             }
-            Form.processANotice(notice, store.getters.token)
+            FormService.processNotice(notice, store.getters.token)
                 .then(res => {
                     if(res === "Successful"){
                         this.close()

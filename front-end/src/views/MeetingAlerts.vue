@@ -10,11 +10,12 @@
         <div class="notices-content">
             <div v-if="isCreator">
                 <h2>Meetings Created</h2>
+                <div v-if="meetingsCreated.length == 0" class="no-view">You have not created any new meeting alerts.</div>
                 
             </div>
             <div>
                 <h2>Meetings Posted</h2>
-                
+                <div v-if="meetingsPosted.length == 0" class="no-view">There are no meeting alerts for you at the moment.</div>
             </div>
         </div>
     </div>
@@ -32,17 +33,16 @@ export default {
   data(){
     return {
         isModalVisible: false,
-        noticesPosted: [],
-        noticesCreated: [],
+        meetingsPosted: [],
+        meetingsCreated: [],
         isNotClient: store.getters.position !== "Client",
         isEditable: false,
-        isCreator: true,
+        isCreator: store.getters.position == "Coach" || store.getters.position == "Chief Executive Officer",
         title: "General notice for meetings",
         information: "Lorem ipsum dolor sit amet consectetur adipisicing elit.Praesentium quaerat sed ad delectus aspernatur earum excepturi placeat magnam veritatis recusandae!",
         senderName: "",
         position: store.getters.position,
         error: "",
-        options: ["Submitted", "Pending", "Approved", "Completed"],
         recipients: store.getters.members,
     }
   },

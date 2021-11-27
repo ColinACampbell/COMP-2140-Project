@@ -1,6 +1,6 @@
 export default {
-    getNotices(token){
-        let res = await fetch("http://localhost:3000/notices/",
+    async getNotices(token){
+        let res = await fetch("http://localhost:3000/notice/",
         {
             method: "GET",
             headers: {

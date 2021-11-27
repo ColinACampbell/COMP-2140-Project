@@ -24,4 +24,4 @@ const store = new createStore({
     }
   },
 })
-export default store;
+export default store

@@ -127,7 +127,7 @@ export default {
                     this.receivers.push(recipient._id)
                 }
             });
-
+            console.log(this.recipients)
             let asset = {
                 status: this.status,
                 fileData: this.file,
@@ -137,7 +137,7 @@ export default {
                 sender: this.senderName,
                 reviewBy: this.reviewDate,
                 assetLink: this.link,
-                recipients: this.receivers
+                recipients: [...this.receivers]
             }
 
             Asset.uploadChanges(store.getters.token, this.assetID, asset)

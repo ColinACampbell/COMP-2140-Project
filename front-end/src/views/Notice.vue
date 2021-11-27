@@ -8,101 +8,42 @@
             <NoticeForm @close="closeModal"></NoticeForm>
         </div>
         <div class="notices-content">
-            <div v-if="isCreator">
-                <h2>Notices Created</h2>
-                <div class="notice-card">
-                    <form id="notice-form" method="post" @submit.prevent="handleSubmit">
-                        <div>
-                            <label for="title" v-if="isEditable">Title  <span v-if="error">--{{error}}--</span></label>
-                            <input type="text" name="title" id="title" v-model="title" required :readonly="!isEditable"/>
-                        </div>
-                        <div>
-                            <label for="information" v-if="isEditable">Information</label>
-                            <textarea name="information" id="information" cols="30" rows="10" v-model="information" required :readonly="!isEditable"></textarea>
-                        </div>
-                        <div class="buttons">
-                            <div v-if="!isEditable">
-                                <button @click="handleEdit" class="edit-btn">Edit Notice</button>
-                            </div>
-                            <div v-if="isEditable" class="buttons">
-                                <button @click="handleCancel" id="cancel" class="button">Cancel</button>
-                                <button type="submit" class="change-btn button">Confirm Changes</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="notice-card">
-                    <form id="notice-form" method="post" @submit.prevent="handleSubmit">
-                        <div>
-                            <label for="title" v-if="isEditable">Title  <span v-if="error">--{{error}}--</span></label>
-                            <input type="text" name="title" id="title" v-model="title" required :readonly="!isEditable"/>
-                        </div>
-                        <div>
-                            <label for="information" v-if="isEditable">Information</label>
-                            <textarea name="information" id="information" cols="30" rows="10" v-model="information" required :readonly="!isEditable"></textarea>
-                        </div>
-                        <div class="buttons">
-                            <div v-if="!isEditable">
-                                <button @click="handleEdit" class="edit-btn">Edit Notice</button>
-                            </div>
-                            <div v-if="isEditable" class="buttons">
-                                <button @click="handleCancel" id="cancel" class="button">Cancel</button>
-                                <button type="submit" class="change-btn button">Confirm Changes</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="notice-card">
-                    <form id="notice-form" method="post" @submit.prevent="handleSubmit">
-                        <div>
-                            <label for="title" v-if="isEditable">Title  <span v-if="error">--{{error}}--</span></label>
-                            <input type="text" name="title" id="title" v-model="title" required :readonly="!isEditable"/>
-                        </div>
-                        <div>
-                            <label for="information" v-if="isEditable">Information</label>
-                            <textarea name="information" id="information" cols="30" rows="10" v-model="information" required :readonly="!isEditable"></textarea>
-                        </div>
-                        <div class="buttons">
-                            <div v-if="!isEditable">
-                                <button @click="handleEdit" class="edit-btn">Edit Notice</button>
-                            </div>
-                            <div v-if="isEditable" class="buttons">
-                                <button @click="handleCancel" id="cancel" class="button">Cancel</button>
-                                <button type="submit" class="change-btn button">Confirm Changes</button>
-                            </div>
-                        </div>
-                    </form>
+            <div>
+                <h2>Notices Posted</h2>
+                <div v-if="noticesPosted.length == 0" class="no-view">There are no notices for you to view at the moment.</div>
+                <div class="notice-card notices-posted" v-for="notice in noticesPosted" :key="notice._id">
+                    <h3 class="notice-title">{{ notice.title }}</h3>
+                    <p class="notice-info">
+                        {{ notice.message }}
+                    </p>
+                    <p class="notice-creator">Creator: <span>{{ notice.sender.name }}</span></p>
+                    <p class="date-created">Date Posted: <span>{{ notice.time }}</span></p>
                 </div>
 
             </div>
-            <div>
-                <h2>Notices Posted</h2>
-                <div class="notice-card notices-posted">
-                    <h3 class="notice-title">New Notice Is Created</h3>
-                    <p class="notice-info">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-                        Praesentium quaerat sed ad delectus aspernatur earum excepturi placeat magnam veritatis recusandae!
-                    </p>
-                    <p class="notice-creator"></p>
-                    <p class="date-created"></p>
-                </div>
-                <div class="notice-card notices-posted">
-                    <h3 class="notice-title">New Notice Is Created</h3>
-                    <p class="notice-info">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-                        Praesentium quaerat sed ad delectus aspernatur earum excepturi placeat magnam veritatis recusandae!
-                    </p>
-                    <p class="notice-creator"></p>
-                    <p class="date-created"></p>
-                </div>
-                <div class="notice-card notices-posted">
-                    <h3 class="notice-title">New Notice Is Created</h3>
-                    <p class="notice-info">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-                        Praesentium quaerat sed ad delectus aspernatur earum excepturi placeat magnam veritatis recusandae!
-                    </p>
-                    <p class="notice-creator"></p>
-                    <p class="date-created"></p>
+            <div v-if="isCreator">
+                <h2>Notices Created</h2>
+                <div v-if="noticesCreated.length == 0" class="no-view">You have not created any new notices.</div>
+                <div class="notice-card" v-for="notice in noticesCreated" :key="notice._id">
+                    <form id="notice-form" method="post" @submit.prevent="handleSubmit(notice._id)">
+                        <div>
+                            <label for="title" v-if="notice._id === noticeSelected">Title  <span v-if="error">--{{error}}--</span></label>
+                            <input type="text" name="title" id="title" v-model="notice.title" required :readonly="!(notice._id === noticeSelected)"/>
+                        </div>
+                        <div>
+                            <label for="information" v-if="notice._id === noticeSelected">Information</label>
+                            <textarea name="information" id="information" cols="30" rows="10" v-model="notice.message" required :readonly="!(notice._id === noticeSelected)"></textarea>
+                        </div>
+                        <div class="buttons">
+                            <div v-if="!(notice._id === noticeSelected)">
+                                <button @click="handleEdit(notice._id)" class="edit-btn">Edit Notice</button>
+                            </div>
+                            <div v-if="notice._id === noticeSelected" class="buttons">
+                                <button @click="handleCancel" id="cancel" class="button">Cancel</button>
+                                <button type="submit" class="change-btn button">Confirm Changes</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -112,6 +53,7 @@
 <script>
 import store from '../store/store'
 import NoticeForm from '../components/NoticeForm.vue'
+import NoticeService from '../services/notice.service'
 
 export default {
   name: 'Notice',
@@ -125,33 +67,87 @@ export default {
         noticesCreated: [],
         isNotClient: store.getters.position !== "Client",
         isEditable: false,
-        isCreator: true,
-        title: "General notice for meetings",
-        information: "Lorem ipsum dolor sit amet consectetur adipisicing elit.Praesentium quaerat sed ad delectus aspernatur earum excepturi placeat magnam veritatis recusandae!",
+        isCreator: store.getters.position == "Coach" || store.getters.position == "Chief Executive Officer",
         senderName: "",
         position: store.getters.position,
         error: "",
-        options: ["Submitted", "Pending", "Approved", "Completed"],
+        userID: store.getters.userInfo.user._id,
+        noticeSelected: "",
         recipients: store.getters.members,
     }
   },
-  mounted(){
-
+  beforeMount(){
+      NoticeService.getNotices(store.getters.token)
+        .then(res => {
+            console.log(res)
+            res.forEach(notice => {
+                let date = new Date(+notice.time)
+                notice.time = date.toDateString()
+                if(notice.sender._id === this.userID){
+                    this.noticesCreated.push(notice)
+                }else{
+                    this.noticesPosted.push(notice)
+                }
+            });
+        })
   },
 
   methods: {
     handleCancel(){
         this.isEditable = false
+        this.noticeSelected = ""
+        this.setNotices()
     },
-    handleEdit(){
+    handleEdit(id){
+        console.log(id)
         this.isEditable = true
+        this.noticeSelected = id
+        this.setNotices()
     },
     showModal() {
         this.isModalVisible = true;
     },
     closeModal() {
         this.isModalVisible = false;
+        this.setNotices()
     },
+    handleSubmit(id){
+        let confirm = window.confirm("Do you want to make these changes?")
+        if(confirm){
+            var newnotice = {title: "", message: ""}
+            this.noticesCreated.forEach(notice => {
+                if(notice._id === id){
+                    newnotice.title = notice.title
+                    newnotice.message = notice.message
+                }
+            })
+
+            NoticeService.uploadNoticeChanges(store.getters.token, id, newnotice)
+                .then(res => {
+                    alert(res === "Failed to update" ? 
+                        "Notice failed to update. Try Again." :
+                        "Notice was succesfully updated!"
+                    )
+                    this.noticeSelected = ""
+                })
+        }
+    },
+    setNotices(){
+        this.noticesPosted = []
+        this.noticesCreated = []
+        NoticeService.getNotices(store.getters.token)
+        .then(res => {
+            res.forEach(notice => {
+                let date = new Date(+notice.time)
+                notice.time = date.toDateString()
+                if(notice.sender._id === this.userID){
+                    this.noticesCreated.push(notice)
+                }else{
+                    this.noticesPosted.push(notice)
+                }
+            });
+        })
+    }
   }
 }
 </script>
@@ -272,7 +268,19 @@ textarea:read-only{
 .notices-posted{
     padding: 5px 15px;
 }
+
 .notice-info{
     width: 48rem;
 }
+
+.notice-creator, .date-created{
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+p span{
+    font-weight: 100;
+}
+
+
 </style>

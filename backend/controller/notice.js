@@ -26,3 +26,22 @@ exports.getNotice = async (req,res) => {
         res.status(200).json(notices)
     })
 }
+
+exports.updateNotice = async (req, res) => {
+    const userID = req.user_session._id;
+    const noticeId = req.params.id;
+
+    const { title, message } = req.body;
+
+   
+    const notice = await NoticeModel.findOne({
+            _id: noticeId,
+        })
+
+    notice.title = title;
+    notice.message = message;
+
+    notice.save();
+    res.status(200).json(notice)
+    
+}

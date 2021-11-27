@@ -69,11 +69,7 @@ exports.uploadAsset = (req, res) => {
         // attributes of the document and should correspond with mango
         fileData: fileData, // base64 format
         type, // Content type
-<<<<<<< HEAD
         title,
-=======
-        title: name,
->>>>>>> origin/feature-notice-management
         description: description,
         sender, // the id of the sender
         assetLink: assetLink, // The link to the asset
@@ -102,6 +98,8 @@ exports.updateAsset = async (req, res) => {
     const userID = req.user_session._id;
     const assetId = req.params.id;
 
+    console.log(req.body)
+
     const { status, assetLink, description, type, fileData, title, recipients, reviewBy } = req.body;
 
     if (status == undefined || status == undefined)
@@ -123,7 +121,7 @@ exports.updateAsset = async (req, res) => {
         asset.description = description;
         asset.type = type;
         asset.fileData = fileData;
-        asset.recipients = [];
+        // asset.recipients = [];
         asset.recipients.push(recipients);
         asset.reviewBy = reviewBy;
 

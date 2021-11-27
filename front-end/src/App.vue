@@ -42,9 +42,19 @@ body{
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* text-align: center; */
   color: #2c3e50;
 }
 
+.no-view{
+  height: 40px;
+  width: 400px;
+  background: #d5c7ff;
+  border-radius: 8px;
+  color: #581eff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px auto;
+}
 
 </style>

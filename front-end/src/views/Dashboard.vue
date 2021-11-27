@@ -4,7 +4,7 @@
             <div>
                 <img id="logo" src="../assets/ipp-white.png" alt="IPP Logo"/>
             </div>
-            <div class="greetings">Hello, {{ name }}</div>
+            <!-- <div class="greetings">Hello, {{ name }}</div> -->
             <ul class="nav-list">
                 <li class="nav-item" :class="current === 'Home' ? 'active' : ''">
                     <router-link to="/dashboard" @click="current = 'Home'">
@@ -44,14 +44,14 @@
 </template>
 
 <script>
-import store from '../store/store'
+// import store from '../store/store'
 export default {
   name: 'Dashboard',
 
   data(){
     return {
         current: this.$route.name,
-        name: store.getters.userName
+        // name: store.getters.userName
     }
   }
 }
