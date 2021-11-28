@@ -4,43 +4,36 @@
         <h2>Create Asset Container</h2>
         <form id="create-issue-form" method="post" @submit.prevent="handleSubmit">
             <div>
-                <label for="title">Title  <span v-if="error">--{{error}}--</span></label>
-                <input type="text" name="title" id="title" v-model="title" required/>
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title" v-model="title" required :readonly="isEditable"/>
             </div>
             <div>
                 <label for="description">Description</label>
-                <textarea name="description" id="description" cols="30" rows="10" v-model="description" required></textarea>
+                <textarea name="description" id="description" cols="30" rows="10" v-model="description" :readonly="isEditable" required></textarea>
             </div>
             <div>
-                <label for="reviewDate">Reviewed by</label>
-                <input type="date" name="reviewDate" id="reviewDate" min="" v-model="reviewDate" required>
-            </div>
-            <!-- <div>
                 <label for="sender">Sender</label>
                 <input type="text" name="sender" id="sender" v-model="senderName" readonly/>
-            </div> -->
+            </div>
             <div>
                 <label for="recipient">Recipient(s)</label>
-                <select name="positions" id="positions" v-model="receiverNames" multiple="true" required>
-                    <option v-for="option in recipients" v-bind:value="option.name" v-bind:key="option.email">
-                        {{option.name}}
+                <select name="positions" id="positions" v-model="receivers" multiple="true" required :readonly="isEditable">
+                    <option v-for="option in recipients" v-bind:value="option" v-bind:key="option">
+                        {{option}}
                     </option>
                 </select>
-                <div class="names">
-                    <div v-for="name in receiverNames" :key="name" class="name">
-                        {{ name }}
-                    </div>
-                </div>
+                {{ receivers }}
             </div>
             <div>
                 <label for="file">Link to File</label>
-                <input name="link"  type="url" v-model="link"/>
+                <input name="link"  type="url" v-model="link" :readonly="isEditable"/>
             </div>
-            <div class="file-input">
+            <div>
                 <label for="file">File Upload</label>
-                <input name="file" class="custom-file-input" id="file" type="file" @change="handleFileUpload( $event )"/>
+                <input name="file" class="custom-file-input" id="file" type="file" @change="handleFileUpload( $event )" :readonly="isEditable"/>
             </div>
             <div class="buttons">
+                <button @click="handleClick" id="edit-btn">Edit Information</button>
                 <button @click="close" id="cancel">Cancel</button>
                 <button type="submit" class="create-btn" :disabled="(file === '' && link === '')">Create</button>
             </div>
@@ -51,24 +44,21 @@
 
 <script>
 import Form from "../services/form.service"
-import store from '../store/store'
-
 export default {
-  name: 'Asset',
+  name: 'EditAsset',
+  props: [
+    'name', 'recipients', 'description', 'file', 'link', 'title'
+  ],
   data(){
     return {
-        title: "",
-        description: "",
-        senderName: store.getters.userName,
-        file: "",
+        title: this.title,
+        description: this.description,
+        senderName: this.name,
+        file: this.file,
         type: "",
-        link: "",
-        reviewDate: "",
-        recipients: store.getters.members,
-        receivers: [],
-        receiverNames: [],
-        error: "",
-        docID: ""
+        link: this.link,
+        receivers: this.recepients,
+        isEditable: false
     } 
   },
   methods:{
@@ -79,42 +69,25 @@ export default {
     close() {
         this.$emit('close');
     },
-    handleSubmit(){
-        this.recipients.forEach(recipient => {
-            if(this.receiverNames.includes(recipient.name)){
-                this.receivers.push(recipient._id)
-            }
-        });
+    handleSubmit(){ //change the functionality in service.js
         let asset = {
-            fileData: this.file,
+            file: this.file,
             type: this.type,
             title: this.title,
             description: this.description,
             sender: this.senderName,
-            reviewBy: this.reviewDate,
-            assetLink: this.link,
-            recipients: this.receivers
+            link: this.link,
+            recepient: this.receivers
         }
         Form.processAsset(asset)
-            .then(res => {
-                if(res === "Successful"){
-                    this.close()
-                    alert("Asset Created!")
-                }else{
-                    this.error = "This title exist for another container"
-                    this.title = ""
-                }
-            })
-        
+        this.close()
+        alert("Asset Created!")
     }
 }
 }
 </script>
 
 <style scoped>
-span{
-    color: red;
-}
 .modal {
   position: fixed; 
   z-index: 1; 
@@ -155,15 +128,16 @@ textarea{
 form div{
     margin: 10px 0;
 }
-
-.file-input{
-    margin-bottom: 0;
-}
-
 .buttons{
     display: flex;
+}
+
+#cancel, .create-btn{
     justify-content: flex-end;
-    margin-top: -10px;
+}
+
+#edit-btn{
+    justify-content: flex-start;
 }
 
 .buttons button{
@@ -174,7 +148,7 @@ form div{
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0px 10px;
+    margin: 10px;
     background: #865cff;
     color: #ffffff;
 }
@@ -183,7 +157,6 @@ button:disabled{
     background: #d5c7ff;
     border: 1px solid #d5c7ff;
 }
-
 #cancel{
     background: none;
     color: #865cff;
@@ -191,30 +164,11 @@ button:disabled{
 
 .custom-file-input {
     border: none;
-    padding-top: 10px;
-
+    padding: 10px 0;
 }
 
 select[multiple] {
     padding-top: 5px ;
     height: 6rem;
-}
-
-.names{
-   display: flex;
-}
-
-.name{
-   height: 35px;
-   border: 1px solid #d5c7ff;
-   border-radius: 8px;
-   background-color: #d5c7ff;
-   color: #865cff;
-   font-weight: bold;
-   padding: 0 15px;
-   margin: 0 5px;
-   display: flex;
-   align-items: center;
-   justify-content: center;
 }
 </style>

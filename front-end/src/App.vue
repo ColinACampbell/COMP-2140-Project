@@ -35,6 +35,7 @@ html{
 body{
   padding: 0;
   margin: 0;
+  overflow: hidden;
 }
 
 #app {
@@ -44,4 +45,6 @@ body{
   /* text-align: center; */
   color: #2c3e50;
 }
+
+
 </style>

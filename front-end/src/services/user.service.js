@@ -18,19 +18,30 @@ export default {
             })
 
         let data = await res.json()
-        console.log(data)
-        if(data.message){
+        if(res.status === 401){
             return "Invalid login"
         }else{
-            // let userToken = {'token': data.token, 'user': data.user}
-            localStorage.setItem("login-token", JSON.stringify(data))
-            return "Successful"
+            // sessionStorage.setItem("login-token", JSON.stringify(data))
+            console.log(data)
+            return data
         }
        
     }, 
 
     async signup (info) {
         // fetch post request
+        let { name, email, position } = info
+
+        if(position === "Client"){
+            if(name.slice(0,3) !== "IPP"){
+                return "Invalid"
+            }
+        } else {
+            if(!email.includes("@itspixelperfect.com")){
+                return "Invalid"
+            }
+        }
+
         let res = await fetch("http://localhost:3000/user/",
             {
                 method: "POST",
