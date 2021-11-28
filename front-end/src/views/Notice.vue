@@ -77,19 +77,19 @@ export default {
     }
   },
   beforeMount(){
-      NoticeService.getNotices(store.getters.token)
-        .then(res => {
-            console.log(res)
-            res.forEach(notice => {
-                let date = new Date(+notice.time)
-                notice.time = date.toDateString()
-                if(notice.sender._id === this.userID){
-                    this.noticesCreated.push(notice)
-                }else{
-                    this.noticesPosted.push(notice)
-                }
-            });
-        })
+    NoticeService.getNotices(store.getters.token)
+    .then(res => {
+        console.log(res)
+        res.forEach(notice => {
+            let date = new Date(+notice.time)
+            notice.time = date.toDateString()
+            if(notice.sender._id === this.userID){
+                this.noticesCreated.push(notice)
+            }else{
+                this.noticesPosted.push(notice)
+            }
+        });
+    })
   },
 
   methods: {

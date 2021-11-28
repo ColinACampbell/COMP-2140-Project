@@ -84,7 +84,7 @@ exports.uploadAsset = (req, res) => {
         } else {
             asset.history.push({
                 time: new Date().getTime(),
-                status: "submitted",
+                status: "Submitted",
                 updatedBy: req.user_session._id
             })
             asset.save()
@@ -121,8 +121,8 @@ exports.updateAsset = async (req, res) => {
         asset.description = description;
         asset.type = type;
         asset.fileData = fileData;
-        // asset.recipients = [];
-        asset.recipients.push(recipients);
+        asset.recipients = []
+        asset.recipients.push(...recipients);
         asset.reviewBy = reviewBy;
 
         asset.history.push(

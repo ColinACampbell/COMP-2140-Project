@@ -9,7 +9,7 @@
             </div>
             <div>
                 <label for="dateTime">Meeting Date and Time</label>
-                <input type="datetime-local" name="dateTime" id="dateTime" min="" v-model="dateTime" required>
+                <input type="datetime-local" name="dateTime" id="dateTime" v-model="dateTime" required>
             </div>
             <div>
                 <label for="file">Link to Meeting</label>
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-// import Form from "../services/form.service"
+import FormService from "../services/form.service"
 import store from '../store/store'
 
 export default {
@@ -50,6 +50,7 @@ export default {
         link: "",
         dateTime: "",
         recipients: store.getters.members,
+        userID: store.getters.userInfo.user._id,
         receivers: [],
         receiverNames: [],
         error: "",
@@ -65,23 +66,23 @@ export default {
                 this.receivers.push(recipient._id)
             }
         });
-        // let meeting = {
-        //     title: this.title,
-        //     sender: this.senderName,
-        //     dateTime: this.dateTime,
-        //     meetingLink: this.link,
-        //     recipients: this.receivers
-        // }
-        // Form.processAsset(asset)
-        //     .then(res => {
-        //         if(res === "Successful"){
-        //             this.close()
-        //             alert("Asset Created!")
-        //         }else{
-        //             this.error = "This title exist for another container"
-        //             this.title = ""
-        //         }
-        //     })
+        let meeting = {
+            title: this.title,
+            date: this.dateTime,
+            meetingLink: this.link,
+            attendees: this.receivers,
+            sender: this.userID
+        }
+        FormService.processMeetingAlert(meeting, store.getters.token)
+            .then(res => {
+                if(res === "Successful"){
+                    this.close()
+                    alert("Meeting Alert Created Successfully!")
+                }else{
+                    this.error = "This title exist for another container"
+                    this.title = ""
+                }
+            })
         
     }
 }
@@ -140,7 +141,7 @@ form div{
 .buttons{
     display: flex;
     justify-content: flex-end;
-    margin-top: -10px;
+    margin-top: 0px;
 }
 
 .buttons button{
