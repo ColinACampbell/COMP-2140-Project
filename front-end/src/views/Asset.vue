@@ -201,8 +201,8 @@ export default {
     },
     
     handlefeedback(){
-        let feedback = { message: this.feedback, title:"", assetId:this.assetID };
-        
+       // let feedback = { message: this.feedback, title:"", assetId:this.assetID };
+
     }
 
   }
