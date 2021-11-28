@@ -6,6 +6,7 @@ const userRoutes = require('./routes/user')
 const assetRoutes = require('./routes/asset')
 const feedbackRoutes = require('./routes/feedback')
 const noticeRoutes = require('./routes/notice')
+const meetingAlertRoutes = require('./routes/meeting-alert')
 
 const app = express(); // create the app
 
@@ -37,7 +38,7 @@ app.use('/user',userRoutes);
 app.use('/asset',assetRoutes);
 app.use('/feedback',feedbackRoutes);
 app.use('/notice',noticeRoutes);
-
+app.use('/meeting-alert',meetingAlertRoutes)
 
 const port = 3000 | process.env.PORT // define a port to listen for the process (net-centric stuff)
 app.listen(port,(err)=>{
