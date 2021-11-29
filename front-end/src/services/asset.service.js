@@ -109,9 +109,28 @@ export default {
         }
         return "Failed to fetch"
        
-    }
+    },
 
-    
+    async postFeedbackReply(reply, token, id){
+
+        let res = await fetch(`http://localhost:3000/feedback/${id}/reply`,
+            {
+                method: "POST",
+                body: JSON.stringify(reply),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
+                },
+                
+            }
+        )
+            
+        if(res.status === 200){
+            return "Successful"
+        }
+
+        return "Failed to upload"
+    },
 
 
 }

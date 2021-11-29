@@ -31,7 +31,7 @@
                     </router-link>
                 </li>
             </ul>
-            <div class="logout">
+            <div class="logout" @click="logoutUser">
                 <img src="../assets/logout.svg" alt="Logout icon">
                 Logout
             </div>
@@ -44,14 +44,20 @@
 </template>
 
 <script>
-// import store from '../store/store'
+import store from '../store/store'
 export default {
   name: 'Dashboard',
 
   data(){
     return {
         current: this.$route.name,
-        // name: store.getters.userName
+    }
+  },
+
+  methods: {
+    logoutUser(){
+        store.commit('updateUserInfo', { userInfo: {} })
+        this.$router.push("/")
     }
   }
 }
@@ -123,7 +129,7 @@ a{
 }
 
 .logout{
-    padding: 30px;
+    padding: 10px 30px;
     margin-top: 200px;
 }
 
@@ -133,4 +139,12 @@ a{
     padding-left: 30px ;
 }
 
+.logout:hover{
+    background: #ffffff;
+    color: #000;
+    cursor: pointer;
+}
+.logout:hover img{
+    filter: none;
+}
 </style>

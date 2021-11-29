@@ -63,23 +63,29 @@
             </form>
         </div>
         <div class="feedback">
+            <p class="feedback-header">Feedbacks</p>
+            <div v-if="assetFeedbacks.length == 0" class="no-view">There are no feedbacks on this asset.</div>
             <div v-for="feedback in assetFeedbacks" :key="feedback._id">
-                <div>
-                    <p>{{ feedback.message }}</p>
-                    <p>{{ feedback.postedBy.name }}</p>
-                    <button>Reply</button>
+                <div class="feedback-content">
+                    <p class="message">{{ feedback.message }}</p>
+                    <p class="msg-user">~{{ feedback.postedBy.name }}</p>
+                    <div class="btn">
+                        <button @click="handleClick(feedback._id)" class="reply-btn">Reply</button>
+                    </div>
                 </div>
-                <ul>
-                    <li v-for="reply in feedback.replies" :key="reply.postedBy">
-                        <p>{{ reply.message }}</p>
-                        <p>{{ reply.postedBy.name }}</p>
+                <ul class="replies">
+                    <li class="reply" v-for="reply in feedback.replies" :key="reply.postedBy">
+                        <p class="message">{{ reply.message }}</p>
+                        <p class="msg-user">~{{ reply.postedBy.name }}</p>
                     </li>
-                    <li>
-                        <form id="create-feedback-form" method="post" @submit.prevent="handleFeedbackReply">
+                    <li v-if="showReplyInput && replySelected === feedback._id">
+                        <form id="create-feedback-form" method="post" @submit.prevent="handleFeedbackReply(feedback._id)">
                             <div>
                                 <textarea name="feedback" id="feedbacktxt" cols="30" rows="10" v-model="feedbackReply" required></textarea>
                             </div>
-                            <button id="post">Reply</button>
+                            <div class="btn">
+                                <button type="submit" id="post" >Reply</button>
+                            </div>
                         </form>
                     </li>
                 </ul>
@@ -88,7 +94,9 @@
                 <div>
                     <textarea name="feedback" id="feedback" cols="30" rows="10" v-model="feedback" required></textarea>
                 </div>
-                <button id="post">Post</button>
+                <div class="btn">
+                    <button type="submit" id="post">Post</button>
+                </div>
              </form>
         </div>
     </div>
@@ -105,13 +113,14 @@ export default {
   data(){
       return {
         feedback: "",
+        feedbackReply: "",
         changeStatus: false,
+        showReplyInput: false,
         isEditable: false,
         isSender: true,
         title: "",
         description: "",
         senderName: "",
-        position: store.getters.position,
         status: "",
         file: "",
         type: "",
@@ -121,9 +130,11 @@ export default {
         receiverNames: [],
         error: "",
         options: ["Submitted", "Pending", "Approved", "Completed"],
+        position: store.getters.position,
         recipients: store.getters.members,
         assetID: this.$route.params.id,
-        assetFeedbacks: []
+        assetFeedbacks: [],
+        replySelected: ""
       }
   },
   beforeMount(){
@@ -131,7 +142,7 @@ export default {
         .then(res => {
             this.title = res.title
             this.description = res.description
-            this.status = Asset.capitaliseFirstLetter(res.status)
+            this.status = AssetService.capitaliseFirstLetter(res.status)
             this.link = res.assetLink
             this.isSender = store.getters.userInfo.user._id === res.sender
             this.reviewDate = res.reviewBy
@@ -149,7 +160,11 @@ export default {
 
     AssetService.getFeedbacks(store.getters.token)
     .then(res => {
-        console.log(res)
+        res.forEach(feedback =>{
+            if(feedback.asset._id === this.assetID){
+                this.assetFeedbacks.push(feedback)
+            }
+        })
     })
     
   },
@@ -208,7 +223,7 @@ export default {
         .then(res => {
             this.title = res.title
             this.description = res.description
-            this.status = Asset.capitaliseFirstLetter(res.status)
+            this.status = AssetService.capitaliseFirstLetter(res.status)
             this.initalStatus = this.status
             this.link = res.assetLink
             this.receivers = []
@@ -228,9 +243,50 @@ export default {
         })
     },
     
-    handlefeedback(){
-       let feedback = { message: this.feedback, assetId:this.assetID };
+    handleFeedback(){
+       let feedback = { message: this.feedback, title: "", assetId:this.assetID };
 
+       AssetService.postFeedback(feedback, store.getters.token)
+       .then(res => {
+        //    console.log(res)
+            if(res === "Successful"){
+                this.setFeedbacks()
+            } else {
+                alert("Feedback was not posted")
+            }
+           
+       })
+
+    },
+
+    setFeedbacks(){
+        AssetService.getFeedbacks(store.getters.token)
+        .then(res => {
+            this.assetFeedbacks = []
+            res.forEach(feedback =>{
+                if(feedback.asset._id === this.assetID){
+                    this.assetFeedbacks.push(feedback)
+                }
+            })
+        })
+    },
+
+    handleFeedbackReply(id){
+        let reply = { message : this.feedbackReply }
+
+        AssetService.postFeedbackReply(reply, store.getters.token, id)
+        .then(res =>{
+            if(res === "Successful"){
+                this.setFeedbacks()
+            }else{
+                alert("Feedback was not posted")
+            }
+        })
+    },
+    
+    handleClick(id){
+        this.showReplyInput = !this.showReplyInput
+        this.replySelected = id
     }
 
   }
@@ -303,7 +359,7 @@ form div{
 
 .asset-container{
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 1fr;
 }
 
 .buttons{
@@ -324,11 +380,6 @@ form div{
     margin: 0px 10px;
     background: #865cff;
     color: #ffffff;
-}
-
-#post{
-    text-align: right;
-    margin-right: -20px;
 }
 
 button:disabled{
@@ -369,4 +420,46 @@ select[multiple] {
    align-items: center;
    justify-content: center;
 }
+
+.feedback-content{
+    border: 1px solid rgba(0, 0,0, 0.25);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+p{
+    margin: 10px 0;
+}
+
+.msg-user{
+    font-weight: bold;
+}
+
+.btn{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.reply-btn{
+    background: none;
+    border: none;
+    color: #865cff;
+}
+
+li{
+    list-style: none;
+    margin: 5px 0;
+}
+.reply{
+    background: rgba(0, 0,0, 0.05);
+    padding: 10px;
+    border-radius: 10px ;
+}
+
+.feedback-header{
+    font-weight: bold;
+    margin-top: -5px;
+    margin-bottom: 20px;
+}
+
 </style>
