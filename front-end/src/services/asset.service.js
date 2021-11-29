@@ -70,5 +70,48 @@ export default {
             return await res.json()
         }
         return "Failed to update"
+    },
+
+    async postFeedback(feedback, token){
+
+        let res = await fetch("http://localhost:3000/feedback/",
+            {
+                method: "POST",
+                body: JSON.stringify(feedback),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
+                },
+                
+            }
+        )
+            
+        if(res.status === 201){
+            return "Successful"
+        }
+
+        return "Failed to upload"
+    },
+
+    async getFeedbacks(token){
+        let res = await fetch(`http://localhost:3000/feedback/`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token,
+            },
+            
+        })
+        console.log(res.status)
+        if(res.status === 200){
+            return await res.json()
+        }
+        return "Failed to fetch"
+       
     }
+
+    
+
+
 }

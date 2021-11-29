@@ -63,6 +63,33 @@
             </form>
         </div>
         <div class="feedback">
+            <div v-for="feedback in assetFeedbacks" :key="feedback._id">
+                <div>
+                    <p>{{ feedback.message }}</p>
+                    <p>{{ feedback.postedBy.name }}</p>
+                    <button>Reply</button>
+                </div>
+                <ul>
+                    <li v-for="reply in feedback.replies" :key="reply.postedBy">
+                        <p>{{ reply.message }}</p>
+                        <p>{{ reply.postedBy.name }}</p>
+                    </li>
+                    <li>
+                        <form id="create-feedback-form" method="post" @submit.prevent="handleFeedbackReply">
+                            <div>
+                                <textarea name="feedback" id="feedbacktxt" cols="30" rows="10" v-model="feedbackReply" required></textarea>
+                            </div>
+                            <button id="post">Reply</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+             <form id="create-feedback-form" method="post" @submit.prevent="handleFeedback">
+                <div>
+                    <textarea name="feedback" id="feedback" cols="30" rows="10" v-model="feedback" required></textarea>
+                </div>
+                <button id="post">Post</button>
+             </form>
         </div>
     </div>
 </div>
@@ -70,13 +97,14 @@
 
 <script>
 import store from '../store/store'
-import Asset from '../services/asset.service'
+import AssetService from '../services/asset.service'
 
 
 export default {
   name: 'Asset',
   data(){
       return {
+        feedback: "",
         changeStatus: false,
         isEditable: false,
         isSender: true,
@@ -94,11 +122,12 @@ export default {
         error: "",
         options: ["Submitted", "Pending", "Approved", "Completed"],
         recipients: store.getters.members,
-        assetID: this.$route.params.id
+        assetID: this.$route.params.id,
+        assetFeedbacks: []
       }
   },
   beforeMount(){
-    Asset.getAsset(store.getters.token, this.assetID)
+    AssetService.getAsset(store.getters.token, this.assetID)
         .then(res => {
             this.title = res.title
             this.description = res.description
@@ -117,6 +146,12 @@ export default {
             });
 
         })
+
+    AssetService.getFeedbacks(store.getters.token)
+    .then(res => {
+        console.log(res)
+    })
+    
   },
   methods: {
     handleSubmit(){
@@ -140,7 +175,7 @@ export default {
                 recipients: [...this.receivers]
             }
 
-            Asset.uploadChanges(store.getters.token, this.assetID, asset)
+            AssetService.uploadChanges(store.getters.token, this.assetID, asset)
                 .then(res => {
                     alert(res === "Failed to update" ? 
                         "Asset failed to update. Try Again." :
@@ -169,7 +204,7 @@ export default {
     },
 
     revertChanges(){
-        Asset.getAsset(store.getters.token, this.assetID)
+        AssetService.getAsset(store.getters.token, this.assetID)
         .then(res => {
             this.title = res.title
             this.description = res.description
@@ -191,7 +226,13 @@ export default {
             });
 
         })
+    },
+    
+    handlefeedback(){
+       let feedback = { message: this.feedback, assetId:this.assetID };
+
     }
+
   }
 }
 
@@ -222,6 +263,12 @@ textarea:read-only{
     height: 50px;
 }
 
+#create-feedback-form{
+     border: 1px solid rgba(0, 0,0, 0.25);
+     border-radius: 10px;
+     padding: 5px 10px;
+}
+
 input, select, textarea{
     display: block;
     width: 95%;
@@ -234,6 +281,10 @@ input, select, textarea{
 
 .asset-content{
     border-right: 1px solid rgba(0, 0,0, 0.25);
+}
+
+.feedback{
+    padding: 10px;
 }
 
 textarea{
@@ -262,7 +313,7 @@ form div{
     margin-right: 10px;
 }
 
-.buttons button{
+.buttons button, #post{
     border: 1px solid #865cff;
     border-radius: 8px;
     height: 40px;
@@ -273,6 +324,11 @@ form div{
     margin: 0px 10px;
     background: #865cff;
     color: #ffffff;
+}
+
+#post{
+    text-align: right;
+    margin-right: -20px;
 }
 
 button:disabled{
