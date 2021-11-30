@@ -30,3 +30,18 @@ exports.getMeetingAlerts = (req,res) => {
         res.status(200).json(alerts)
     })
 }
+
+exports.editMeetingAlert = (req,res) => {
+    const meetingAlertId = req.params.id;
+    const {meetingLink, date , attendees} = req.body
+
+    MeetingAlert.findOne({
+        _id : meetingAlertId
+    }).then((meetingAlert)=>{
+        meetingAlert.meetingLink = meetingLink;
+        meetingAlert.date = date;
+        meetingAlert.attendees = attendees
+        meetingAlert.save();
+        res.status(200).json({})
+    })
+}
