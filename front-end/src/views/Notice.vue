@@ -79,7 +79,6 @@ export default {
   beforeMount(){
     NoticeService.getNotices(store.getters.token)
     .then(res => {
-        console.log(res)
         res.forEach(notice => {
             let date = new Date(+notice.time)
             notice.time = date.toDateString()
@@ -99,7 +98,6 @@ export default {
         this.setNotices()
     },
     handleEdit(id){
-        console.log(id)
         this.isEditable = true
         this.noticeSelected = id
         this.setNotices()

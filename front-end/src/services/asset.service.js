@@ -22,7 +22,6 @@ export default {
             },
             
         })
-        console.log(res.status)
         if(res.status === 200){
             return await res.json()
         }
@@ -40,7 +39,6 @@ export default {
             },
             
         })
-        console.log(res.status)
         if(res.status === 200){
             return await res.json()
         }
@@ -103,7 +101,6 @@ export default {
             },
             
         })
-        console.log(res.status)
         if(res.status === 200){
             return await res.json()
         }

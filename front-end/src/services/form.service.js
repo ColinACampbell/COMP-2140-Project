@@ -74,7 +74,6 @@ export default {
         return "Failed to upload"
     },
     async processMeetingAlert(meetingAlert, token){
-        console.log(meetingAlert)
 
         let res = await fetch("http://localhost:3000/meeting-alert/",
             {

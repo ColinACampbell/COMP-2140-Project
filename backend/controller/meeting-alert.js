@@ -33,11 +33,12 @@ exports.getMeetingAlerts = (req,res) => {
 
 exports.editMeetingAlert = (req,res) => {
     const meetingAlertId = req.params.id;
-    const {meetingLink, date , attendees} = req.body
+    const {meetingLink, date , attendees, title} = req.body
 
     MeetingAlert.findOne({
         _id : meetingAlertId
     }).then((meetingAlert)=>{
+        meetingAlert.title = title;
         meetingAlert.meetingLink = meetingLink;
         meetingAlert.date = date;
         meetingAlert.attendees = attendees

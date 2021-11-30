@@ -81,9 +81,9 @@ export default {
     this.date = date.toDateString()
     AssetService.getAssets(store.getters.token)
       .then(res => {
-        console.log(res)
         if(res === "Failed to fetch"){
           console.log("failed") //Fix
+          this.$router.push("/dashboard")
         } else {
           [...res.sent, ...res.recieved].forEach(asset => {
             switch (asset.status) {

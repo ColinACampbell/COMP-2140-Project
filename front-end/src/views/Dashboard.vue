@@ -18,7 +18,7 @@
                          <span>Assets</span>
                     </router-link>
                 </li>
-                <li class="nav-item" :class="current === 'Notice' ? 'active' : ''">
+                <li v-if="!isClient" class="nav-item" :class="current === 'Notice' ? 'active' : ''">
                     <router-link to="/dashboard/notices" @click="current = 'Notice'">
                         <img src="../assets/notices.svg" alt="Notice icon">
                          <span>Notices</span>
@@ -51,6 +51,7 @@ export default {
   data(){
     return {
         current: this.$route.name,
+        isClient: store.getters.position === "Client"
     }
   },
 

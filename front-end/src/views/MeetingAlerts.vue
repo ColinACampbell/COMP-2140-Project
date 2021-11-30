@@ -27,7 +27,7 @@
                     <div class="input">
                         <label for="recipient">Attendee(s)</label>
                         <select name="recipient" id="recipient" v-model="alert.attendees" multiple="true" required v-if="isEditable && alert._id === alertSelected">
-                            <option v-for="option in recipients" v-bind:value="option.name" v-bind:key="option.email">
+                            <option v-for="option in recipients" v-bind:value="option" v-bind:key="option.name">
                                 {{option.name}}
                             </option>
                         </select>
@@ -107,12 +107,18 @@ export default {
   beforeMount(){
     MeetingService.getMeetingAlerts(store.getters.token)
     .then(res => {
-        console.log(res)
         res.forEach(alert => {
+            console.log(alert)
+            alert.attendeeNames = alert.attendees
             if(alert.sender._id === this.userID){
                 this.alertsCreated.push(alert)
             }else{
-                this.alertsPosted.push(alert)
+                alert.attendees.forEach(attendee => {
+                    if(attendee._id === this.userID){
+                        this.alertsPosted.push(alert)
+                    }
+                })
+                
             }
         });
     })
@@ -125,7 +131,6 @@ export default {
         this.setAlerts()
     },
     handleEdit(id){
-        console.log(id)
         this.isEditable = true
         this.alertSelected = id
         this.setAlerts()
@@ -144,7 +149,7 @@ export default {
                 title: "",
                 date: "",
                 meetingLink: "",
-                attendees: "",
+                attendees: [],
                 sender: this.userID
             }
             this.alertsCreated.forEach(alert => {
@@ -152,18 +157,19 @@ export default {
                     newalert.title = alert.title
                     newalert.meetingLink = alert.meetingLink
                     newalert.date = alert.date
-                    // Convert attendee names to id
+                    alert.attendees.forEach(recipient => {
+                        newalert.attendees.push(recipient._id)
+                    })
                 }
             })
-
-        //     NoticeService.uploadNoticeChanges(store.getters.token, id, newalert)
-        //         .then(res => {
-        //             alert(res === "Failed to update" ? 
-        //                 "Meeting Alert failed to update. Try Again." :
-        //                 "Meeting Alert was succesfully updated!"
-        //             )
-        //             this.alertSelected = ""
-        //         })
+            MeetingService.uploadAlertChanges(store.getters.token, id, newalert)
+                .then(res => {
+                    alert(res === "Failed to update" ? 
+                        "Meeting Alert failed to update. Try Again." :
+                        "Meeting Alert was succesfully updated!"
+                    )
+                    this.alertSelected = ""
+                })
         }
     },
     setAlerts(){
@@ -276,6 +282,7 @@ form, .meeting{
     border: 1px solid rgba(0,0,0, 0.25);
     border-radius: 10px;
     padding: 10px;
+    margin: 5px;
 }
 
 form div{

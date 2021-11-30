@@ -96,9 +96,9 @@ export default {
     Asset.getAssets(store.getters.token)
         .then(res => {
             if(res === "Failed to fetch"){
-            console.log("failed") //Fix
+              alert("Failed to load resources. Please try again")
+              this.$router.push("/dashboard")
           } else {
-            console.log(res)
             this.assetsSent = res.sent
             this.assetsRecieved = res.recieved
             
@@ -118,7 +118,8 @@ export default {
       Asset.getAssets(store.getters.token)
         .then(res => {
             if(res === "Failed to fetch"){
-            console.log("failed")
+              alert("Failed to load resources please try again.")
+              this.$router.push('/dashboard')
           } else {
             this.assetsSent = res.sent
             this.assetsRecieved = res.recieved

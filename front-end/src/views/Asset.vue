@@ -177,7 +177,6 @@ export default {
                     this.receivers.push(recipient._id)
                 }
             });
-            console.log(this.recipients)
             let asset = {
                 status: this.status,
                 fileData: this.file,
@@ -248,7 +247,6 @@ export default {
 
        AssetService.postFeedback(feedback, store.getters.token)
        .then(res => {
-        //    console.log(res)
             if(res === "Successful"){
                 this.setFeedbacks()
             } else {
@@ -302,7 +300,8 @@ h2{
 }
 
 label{
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 700;
 }
 
 input:read-only, textarea:read-only{
