@@ -23,6 +23,7 @@
 
 <script>
 import Login  from "../services/user.service.js";
+import store from '../store/store'
 
 export default {
   name: 'Login',
@@ -40,12 +41,12 @@ export default {
         let password = this.password
         Login.login({email, password})
             .then(res => {
-                console.log(res)
                 if(res === "Invalid login"){
                     this.error = true
                     this.email = ""
                     this.password = ""
                 } else {
+                    store.commit('updateUserInfo', { userInfo: res })
                     this.$router.push("/dashboard")
                 }
             })

@@ -3,7 +3,7 @@ const { Feedback, FeedbackReply } = require('./../mongo/feedback');
 exports.createFeedback = (req, res) => {
     const { message, title, assetId } = req.body;
     const user = req.user_session;
-    if (message === undefined || title === undefined || message.length === 0 || title.length === 0)
+    if (message === undefined  || message.length === 0 )
         res.status(400).json({
             message: "Invalid Parameters"
         })

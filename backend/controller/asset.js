@@ -3,7 +3,7 @@ const { Asset, AssetStatusHistory } = require("../mongo/asset");
 
 exports.getAssets = async (req, res) => {
 
-    const selectedFields = "assetLink description type name recipients sender title status reviewedBy"
+    const selectedFields = "assetLink description type name recipients sender title status reviewBy"
     const populateFields = [{
         path: "recipients",
         select: "name email _id"
@@ -61,7 +61,7 @@ exports.getAsset = (req, res) => {
 exports.uploadAsset = (req, res) => {
 
     console.log(req.user_session._id)
-    const { assetLink, description, type, fileData, name, recipients, reviewedBy } = req.body;
+    const { assetLink, description, type, fileData, title, recipients, reviewBy } = req.body;
 
     const sender = req.user_session._id;
 
@@ -69,13 +69,13 @@ exports.uploadAsset = (req, res) => {
         // attributes of the document and should correspond with mango
         fileData: fileData, // base64 format
         type, // Content type
-        title: name,
+        title,
         description: description,
         sender, // the id of the sender
         assetLink: assetLink, // The link to the asset
         recipients, // array of id's of the recipients ['...','...']
-        status: "submitted",
-        reviewedBy
+        status: "Submitted",
+        reviewBy
     }
     Asset.create(asset, async function (err, asset) {
         if (err) {
@@ -84,7 +84,7 @@ exports.uploadAsset = (req, res) => {
         } else {
             asset.history.push({
                 time: new Date().getTime(),
-                status: "submitted",
+                status: "Submitted",
                 updatedBy: req.user_session._id
             })
             asset.save()
@@ -98,7 +98,9 @@ exports.updateAsset = async (req, res) => {
     const userID = req.user_session._id;
     const assetId = req.params.id;
 
-    const { status, assetLink, description, type, fileData, name, recipients, reviewedBy } = req.body;
+    console.log(req.body)
+
+    const { status, assetLink, description, type, fileData, title, recipients, reviewBy } = req.body;
 
     if (status == undefined || status == undefined)
         res.status(400).json({ message: "Invalid Status" })
@@ -114,14 +116,14 @@ exports.updateAsset = async (req, res) => {
         })
 
         asset.status = status;
-        asset.title = name;
+        asset.title = title;
         asset.assetLink = assetLink;
         asset.description = description;
         asset.type = type;
         asset.fileData = fileData;
-        asset.recipients = [];
-        asset.recipients.push(recipients);
-        asset.reviewdBy = reviewedBy;
+        asset.recipients = []
+        asset.recipients.push(...recipients);
+        asset.reviewBy = reviewBy;
 
         asset.history.push(
             {
