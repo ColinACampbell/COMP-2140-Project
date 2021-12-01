@@ -2,9 +2,10 @@
 <div class="modal">
     <div class="modal-content"> 
         <h2>Create Meeting Alert</h2>
+        <span v-if="error">--{{error}}--</span>
         <form id="create-form" method="post" @submit.prevent="handleSubmit">
             <div>
-                <label for="title">Title  <span v-if="error">--{{error}}--</span></label>
+                <label for="title">Title</label>
                 <input type="text" name="title" id="title" v-model="title" required/>
             </div>
             <div>
@@ -78,9 +79,11 @@ export default {
                 if(res === "Successful"){
                     this.close()
                     alert("Meeting Alert Created Successfully!")
-                }else{
-                    this.error = "This title exist for another container"
-                    this.title = ""
+                } else if(res === "Title duplication"){
+                    this.error = "Title already exists in the system."
+                }
+                else{
+                    this.error = "There is an error in creating the meeting alert."
                 }
             })
         

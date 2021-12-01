@@ -82,6 +82,7 @@
                         <form id="create-feedback-form" method="post" @submit.prevent="handleFeedbackReply(feedback._id)">
                             <div>
                                 <textarea name="feedback" id="feedbacktxt" cols="30" rows="10" v-model="feedbackReply" required></textarea>
+                                <span>{{errorreply}}</span>
                             </div>
                             <div class="btn">
                                 <button type="submit" id="post" >Reply</button>
@@ -93,6 +94,7 @@
              <form id="create-feedback-form" method="post" @submit.prevent="handleFeedback">
                 <div>
                     <textarea name="feedback" id="feedback" cols="30" rows="10" v-model="feedback" required></textarea>
+                    <span>{{error}}</span>
                 </div>
                 <div class="btn">
                     <button type="submit" id="post">Post</button>
@@ -129,6 +131,7 @@ export default {
         receivers: [],
         receiverNames: [],
         error: "",
+        errorreply: "",
         options: ["Submitted", "Pending", "Approved", "Completed"],
         position: store.getters.position,
         recipients: store.getters.members,
@@ -191,12 +194,16 @@ export default {
 
             AssetService.uploadChanges(store.getters.token, this.assetID, asset)
                 .then(res => {
-                    alert(res === "Failed to update" ? 
-                        "Asset failed to update. Try Again." :
-                        "Asset was succesfully updated!"
-                    )
-                    this.isEditable = false
-                    this.changeStatus = false
+                    if(res === "Title duplication"){
+                        this.error = "Title already exists in the system."
+                    } else {
+                        alert(res === "Failed to update" ? 
+                            "Asset failed to update. Try Again." :
+                            "Asset was succesfully updated!"
+                        )
+                        this.isEditable = false
+                        this.changeStatus = false
+                    }
                 })
         }
 
@@ -244,16 +251,23 @@ export default {
     
     handleFeedback(){
        let feedback = { message: this.feedback, title: "", assetId:this.assetID };
-
-       AssetService.postFeedback(feedback, store.getters.token)
-       .then(res => {
-            if(res === "Successful"){
-                this.setFeedbacks()
-            } else {
-                alert("Feedback was not posted")
-            }
-           
-       })
+       let wordCheck = this.feedback.split(" ")
+        if(wordCheck.length > 500){
+            this.error = "Words exceed 500"
+        }
+        else{
+            AssetService.postFeedback(feedback, store.getters.token)
+            .then(res => {
+                this.error = ""
+                    if(res === "Successful"){
+                        this.setFeedbacks()
+                    } else {
+                        alert("Feedback was not posted")
+                    }
+                
+            })
+        }
+       
 
     },
 
@@ -271,15 +285,21 @@ export default {
 
     handleFeedbackReply(id){
         let reply = { message : this.feedbackReply }
-
-        AssetService.postFeedbackReply(reply, store.getters.token, id)
-        .then(res =>{
-            if(res === "Successful"){
-                this.setFeedbacks()
-            }else{
-                alert("Feedback was not posted")
-            }
-        })
+        let wordCheck = this.feedbackReply.split(" ")
+        if(wordCheck.length > 500){
+            this.errorreply = "Words exceed 500"
+        }
+        else{
+            AssetService.postFeedbackReply(reply, store.getters.token, id)
+            .then(res =>{
+                this.errorreply = ""
+                if(res === "Successful"){
+                    this.setFeedbacks()
+                }else{
+                    alert("Feedback reply was not posted")
+                }
+            })
+        }
     },
     
     handleClick(id){
@@ -431,6 +451,7 @@ p{
 }
 
 .msg-user{
+    font-size: 12px;
     font-weight: bold;
 }
 
@@ -459,6 +480,10 @@ li{
     font-weight: bold;
     margin-top: -5px;
     margin-bottom: 20px;
+}
+
+span{
+    color: #ff0000;
 }
 
 </style>

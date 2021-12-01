@@ -69,7 +69,7 @@ export default {
     close() {
         this.$emit('close');
     },
-    handleSubmit(){ //change the functionality in service.js
+    handleSubmit(){
         let asset = {
             file: this.file,
             type: this.type,

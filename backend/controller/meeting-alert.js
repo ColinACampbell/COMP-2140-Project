@@ -48,7 +48,7 @@ exports.getMeetingAlerts = (req, res) => {
 exports.editMeetingAlert = (req, res) => {
     const meetingAlertId = req.params.id;
     const { meetingLink, date, attendees, title } = req.body
-
+    console.log("Hello")
     MeetingAlert.findOne({
         _id: meetingAlertId
     }).then((meetingAlert) => {
@@ -62,10 +62,10 @@ exports.editMeetingAlert = (req, res) => {
 }
 
 exports.deleteMeetingAlert = (req, res) => {
-    const meetingId = req.params._id;
+    const meetingId = req.params.id;
     MeetingAlert.deleteOne({
-        id: meetingId
-    }, () => {
-        res.status(200).json({ message: "Item was deleted" })
+        _id:meetingId
+    },()=>{
+        res.status(200).json({message:"Item was deleted"})
     })
 }

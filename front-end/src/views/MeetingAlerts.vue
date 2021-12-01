@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="buttons">
-                        <div v-if="!(alert._id === alertSelected)">
+                        <div v-if="!(alert._id === alertSelected)" class="buttons">
                             <button @click="handleEdit(alert._id)" class="edit-btn">Edit Meeting Alert</button>
                         </div>
                         <div v-if="alert._id === alertSelected" class="buttons">
@@ -108,7 +108,6 @@ export default {
     MeetingService.getMeetingAlerts(store.getters.token)
     .then(res => {
         res.forEach(alert => {
-            console.log(alert)
             alert.attendeeNames = alert.attendees
             if(alert.sender._id === this.userID){
                 this.alertsCreated.push(alert)
@@ -164,11 +163,15 @@ export default {
             })
             MeetingService.uploadAlertChanges(store.getters.token, id, newalert)
                 .then(res => {
-                    alert(res === "Failed to update" ? 
-                        "Meeting Alert failed to update. Try Again." :
-                        "Meeting Alert was succesfully updated!"
-                    )
-                    this.alertSelected = ""
+                    if(res === "Title duplication"){
+                        this.error = "Title already exists in the system."
+                    } else {
+                        alert(res === "Failed to update" ? 
+                            "Meeting Alert failed to update. Try Again." :
+                            "Meeting Alert was succesfully updated!"
+                        )
+                        this.alertSelected = ""
+                    }
                 })
         }
     },
@@ -185,7 +188,7 @@ export default {
                     }
                 });
             })
-    }
+    },
   }
 }
 </script>
@@ -328,5 +331,18 @@ p{
 
 .label{
     font-weight: bold;
+}
+
+.delete-btn{
+    border: 1px solid #ff0000;
+    border-radius: 8px;
+    width: 100px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px 10px;
+    background: #ff0000;
+    color: #ffffff;
 }
 </style>
