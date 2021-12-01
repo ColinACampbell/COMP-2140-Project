@@ -2,9 +2,10 @@
 <div class="modal">
     <div class="modal-content"> 
         <h2>Create Notice</h2>
+        <span v-if="error">--{{error}}--</span>
         <form id="notice-form" method="post" @submit.prevent="handleSubmit">
             <div>
-                <label for="title">Title  <span v-if="error">--{{error}}--</span></label>
+                <label for="title">Title</label>
                 <input type="text" name="title" id="title" v-model="title" required/>
             </div>
             <div>
@@ -51,7 +52,7 @@ export default {
                         this.close()
                         alert("Notice Created!")
                     }else{
-                        this.error = "This title exist for another notice"
+                        this.error = "There is an error in creating the notice"
                         this.title = ""
                     }
                 })

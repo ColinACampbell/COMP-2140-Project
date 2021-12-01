@@ -2,7 +2,7 @@
     <div class="container">
         <div class="header">
             <h1>Current Meeting Alerts</h1>
-            <button class="create-btn" @click="showModal" v-if="isNotClient">Create Meeting Alert</button>
+            <button class="create-btn" @click="showModal" v-if="isNotClient && isCreator">Create Meeting Alert</button>
         </div>
         <div v-if="isModalVisible">
             <MeetingForm @close="closeModal"></MeetingForm>
@@ -108,7 +108,6 @@ export default {
     MeetingService.getMeetingAlerts(store.getters.token)
     .then(res => {
         res.forEach(alert => {
-            console.log(alert)
             alert.attendeeNames = alert.attendees
             if(alert.sender._id === this.userID){
                 this.alertsCreated.push(alert)

@@ -2,7 +2,7 @@
     <div class="container">
         <div class="header">
             <h1>Current Notices</h1>
-            <button class="create-btn" @click="showModal" v-if="isNotClient">Create New Notice</button>
+            <button class="create-btn" @click="showModal" v-if="isNotClient && isCreator">Create New Notice</button>
         </div>
         <div v-if="isModalVisible">
             <NoticeForm @close="closeModal"></NoticeForm>
