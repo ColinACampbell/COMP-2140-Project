@@ -59,9 +59,8 @@ exports.getAsset = (req, res) => {
     })
 }
 
-exports.uploadAsset = (req, res) => {
+exports.uploadAsset = async (req, res) => {
 
-    console.log(req.user_session._id)
     const { assetLink, description, type, fileData, title, recipients, reviewBy } = req.body;
 
     const sender = req.user_session._id;
@@ -78,29 +77,33 @@ exports.uploadAsset = (req, res) => {
         status: "Submitted",
         reviewBy
     }
-    Asset.create(asset, async function (err, asset) {
-        if (err) {
-            if (err) throw err;
-            res.status(500).json({})
-        } else {
-            asset.history.push({
-                time: new Date().getTime(),
-                status: "Submitted",
-                updatedBy: req.user_session._id
-            })
-            asset.save()
-            //mailTransport.sendEmail("prontobol@gmail.com","New Asset","You have a new asset")
-            res.status(201).json({}); // Send the '201' status code to let the user/client know the operation was successful
-        }
-    })
+
+    const existingAssets = await Asset.find({ title });
+
+    if (existingAssets.length > 0)
+        res.status(409).json({ message: "Asset with this title already exists" })
+    else
+        Asset.create(asset, async function (err, asset) {
+            if (err) {
+                if (err) throw err;
+                res.status(500).json({})
+            } else {
+                asset.history.push({
+                    time: new Date().getTime(),
+                    status: "Submitted",
+                    updatedBy: req.user_session._id
+                })
+                asset.save()
+                //mailTransport.sendEmail("prontobol@gmail.com","New Asset","You have a new asset")
+                res.status(201).json({}); // Send the '201' status code to let the user/client know the operation was successful
+            }
+        })
 }
 
 
 exports.updateAsset = async (req, res) => {
     const userID = req.user_session._id;
     const assetId = req.params.id;
-
-    console.log(req.body)
 
     const { status, assetLink, description, type, fileData, title, recipients, reviewBy } = req.body;
 
