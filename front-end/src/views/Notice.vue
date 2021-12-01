@@ -122,11 +122,17 @@ export default {
 
             NoticeService.uploadNoticeChanges(store.getters.token, id, newnotice)
                 .then(res => {
-                    alert(res === "Failed to update" ? 
-                        "Notice failed to update. Try Again." :
-                        "Notice was succesfully updated!"
-                    )
-                    this.noticeSelected = ""
+                    if(res === "Title duplication"){
+                        this.error = "Title already exists in the system."
+                    } else {
+                        alert(res === "Failed to update" ? 
+                            "Notice failed to update. Try Again." :
+                            "Notice was succesfully updated!"
+                        )
+                        this.noticeSelected = ""
+                    }
+
+                    
                 })
         }
     },

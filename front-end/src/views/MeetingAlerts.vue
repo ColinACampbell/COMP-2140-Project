@@ -2,7 +2,7 @@
     <div class="container">
         <div class="header">
             <h1>Current Meeting Alerts</h1>
-            <button class="create-btn" @click="showModal" v-if="isNotClient && isCreator">Create Meeting Alert</button>
+            <button class="create-btn" @click="showModal" v-if="isNotClient">Create Meeting Alert</button>
         </div>
         <div v-if="isModalVisible">
             <MeetingForm @close="closeModal"></MeetingForm>
@@ -163,11 +163,15 @@ export default {
             })
             MeetingService.uploadAlertChanges(store.getters.token, id, newalert)
                 .then(res => {
-                    alert(res === "Failed to update" ? 
-                        "Meeting Alert failed to update. Try Again." :
-                        "Meeting Alert was succesfully updated!"
-                    )
-                    this.alertSelected = ""
+                    if(res === "Title duplication"){
+                        this.error = "Title already exists in the system."
+                    } else {
+                        alert(res === "Failed to update" ? 
+                            "Meeting Alert failed to update. Try Again." :
+                            "Meeting Alert was succesfully updated!"
+                        )
+                        this.alertSelected = ""
+                    }
                 })
         }
     },

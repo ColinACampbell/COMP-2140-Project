@@ -48,8 +48,9 @@ export default {
             
         if(res.status === 201){
             return "Successful"
+        } else if(res.status == 409){
+            return "Title duplication"
         }
-
         return "Failed to upload"
         
     },
@@ -69,8 +70,9 @@ export default {
             
         if(res.status === 201){
             return "Successful"
+        } else if(res.status == 409){
+            return "Title duplication"
         }
-
         return "Failed to upload"
     },
     async processMeetingAlert(meetingAlert, token){
@@ -89,8 +91,9 @@ export default {
             
         if(res.status === 201){
             return "Successful"
+        } else if(res.status == 409){
+            return "Title duplication"
         }
-
         return "Failed to upload"
     }
 }

@@ -97,7 +97,10 @@ export default {
                 if(res === "Successful"){
                     this.close()
                     alert("Asset Created!")
-                }else{
+                } else if(res === "Title duplication"){
+                    this.error = "Title already exists in the system."
+                }
+                else{
                     this.error = "There is an error in uploading the asset."
                 }
             })

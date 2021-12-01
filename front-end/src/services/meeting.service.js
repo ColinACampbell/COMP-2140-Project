@@ -30,6 +30,8 @@ export default{
         })
         if(res.status === 200){
             return await res.json()
+        } else if(res.status == 409){
+            return "Title duplication"
         }
         return "Failed to update"
     },
