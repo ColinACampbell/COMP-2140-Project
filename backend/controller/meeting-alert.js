@@ -5,7 +5,7 @@ const duplicateCheck = async (res, title, createMeetingAlert) => {
         title: title
     });
 
-    if (existingMeetingAlerts > 0)
+    if (existingMeetingAlerts.length > 0)
         res.status(409).json({})
     else
         createMeetingAlert(); // runs the create
