@@ -1,20 +1,11 @@
 const MeetingAlert = require('./../mongo/meeting-alert')
+const ModelUtil = require('./../utils/model')
 
-const duplicateTitleCheck = async (res, title, Model, action) => {
-    const existingMeetingAlerts = await Model.find({
-        title: title
-    });
-
-    if (existingMeetingAlerts.length > 0)
-        res.status(409).json({})
-    else
-        action(); // runs the create
-}
 
 exports.createMeetingAlert = async (req, res) => {
     const { attendees, meetingLink, date, title, sender } = req.body;
     // Write code to check if any inputs are valid
-    duplicateTitleCheck(res, title, MeetingAlert, () => {
+    ModelUtil.duplicateTitleCheck(res, title, MeetingAlert, () => {
         MeetingAlert.create({
             title,
             sender,
@@ -51,7 +42,7 @@ exports.editMeetingAlert = (req, res) => {
 
     console.log(title)
 
-    duplicateTitleCheck(res, title, MeetingAlert, () => {
+    ModelUtil.duplicateTitleCheck(res, title, MeetingAlert, () => {
         MeetingAlert.findOne({
             _id: meetingAlertId
         }).then((meetingAlert) => {
