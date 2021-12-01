@@ -1,7 +1,7 @@
 const MeetingAlert = require('./../mongo/meeting-alert')
 
-exports.createMeetingAlert = (req,res) => {
-    const {attendees, meetingLink, date, title, sender } = req.body;
+exports.createMeetingAlert = (req, res) => {
+    const { attendees, meetingLink, date, title, sender } = req.body;
     // Write code to check if any inputs are valid
     MeetingAlert.create({
         title,
@@ -9,40 +9,49 @@ exports.createMeetingAlert = (req,res) => {
         attendees,
         meetingLink,
         date
-    }).then((meetingAlert)=>{
+    }).then((meetingAlert) => {
         res.status(201).json(meetingAlert)
-    }).catch((err)=>{
+    }).catch((err) => {
         res.status(500).json({})
     })
 }
 
-exports.getMeetingAlerts = (req,res) => {
+exports.getMeetingAlerts = (req, res) => {
     MeetingAlert.find().populate([
         {
-            path:"sender",
+            path: "sender",
             select: "name email _id"
         },
         {
-            path:"attendees",
+            path: "attendees",
             select: "name email _id"
         }
-    ]).exec((err,alerts)=>{
+    ]).exec((err, alerts) => {
         res.status(200).json(alerts)
     })
 }
 
-exports.editMeetingAlert = (req,res) => {
+exports.editMeetingAlert = (req, res) => {
     const meetingAlertId = req.params.id;
-    const {meetingLink, date , attendees, title} = req.body
+    const { meetingLink, date, attendees, title } = req.body
 
     MeetingAlert.findOne({
-        _id : meetingAlertId
-    }).then((meetingAlert)=>{
+        _id: meetingAlertId
+    }).then((meetingAlert) => {
         meetingAlert.title = title;
         meetingAlert.meetingLink = meetingLink;
         meetingAlert.date = date;
         meetingAlert.attendees = attendees
         meetingAlert.save();
         res.status(200).json({})
+    })
+}
+
+exports.deleteMeetingAlert = (req, res) => {
+    const meetingId = req.params._id;
+    MeetingAlert.deleteOne({
+        id:meetingId
+    },()=>{
+        res.status(200).json({message:"Item was deleted"})
     })
 }
