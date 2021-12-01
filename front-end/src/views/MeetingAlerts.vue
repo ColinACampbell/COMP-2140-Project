@@ -40,7 +40,6 @@
                     <div class="buttons">
                         <div v-if="!(alert._id === alertSelected)" class="buttons">
                             <button @click="handleEdit(alert._id)" class="edit-btn">Edit Meeting Alert</button>
-                            <!-- <button @click="handleDelete(alert._id)" class="delete-btn">Delete</button> -->
                         </div>
                         <div v-if="alert._id === alertSelected" class="buttons">
                             <button @click="handleCancel" id="cancel" class="button">Cancel</button>
@@ -186,16 +185,6 @@ export default {
                 });
             })
     },
-    // handleDelete(id){
-    //     MeetingService.deleteAlert(store.getters.token, id)
-    //     .then(res => {
-    //         alert(res === "Successful" ? 
-    //             "Alert was deleted successfully": 
-    //             "There was an error in deleting the alert please try again")
-
-    //         this.setAlerts()
-    //     })
-    // }
   }
 }
 </script>

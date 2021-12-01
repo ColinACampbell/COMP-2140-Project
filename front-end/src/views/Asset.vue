@@ -81,7 +81,7 @@
                     <li v-if="showReplyInput && replySelected === feedback._id">
                         <form id="create-feedback-form" method="post" @submit.prevent="handleFeedbackReply(feedback._id)">
                             <div>
-                                <textarea name="feedback" id="feedbacktxt" cols="30" rows="10" v-model="feedbackReply" required></textarea>
+                                <textarea name="feedback" id="feedbacktxt" cols="30" rows="10" v-model="feedbackReply" required maxlength="500"></textarea>
                             </div>
                             <div class="btn">
                                 <button type="submit" id="post" >Reply</button>
@@ -92,7 +92,7 @@
             </div>
              <form id="create-feedback-form" method="post" @submit.prevent="handleFeedback">
                 <div>
-                    <textarea name="feedback" id="feedback" cols="30" rows="10" v-model="feedback" required></textarea>
+                    <textarea name="feedback" id="feedback" cols="30" rows="10" v-model="feedback" required maxlength="500"></textarea>
                 </div>
                 <div class="btn">
                     <button type="submit" id="post">Post</button>
@@ -431,6 +431,7 @@ p{
 }
 
 .msg-user{
+    font-size: 12px;
     font-weight: bold;
 }
 

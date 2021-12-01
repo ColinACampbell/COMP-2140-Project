@@ -34,18 +34,4 @@ export default{
         return "Failed to update"
     },
 
-    // async deleteAlert(token, id){
-    //     let res = await fetch(`http://localhost:3000/meeting-alert/delete/${id}`,
-    //     {
-    //         method: "DELETE",
-    //         headers: {
-    //             "Authorization": "Bearer " + token,
-    //         },
-            
-    //     })
-    //     if(res.status === 200){
-    //         return "Successful"
-    //     }
-    //     return "Failed to update"
-    // }
 }

@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
 
         if (typeof body[key] === 'string' || body[key] instanceof String)
         {
-
+            passedCheck = true
         }
 
         if (body[key] === null || body[key] === "" || body[key] === undefined)
