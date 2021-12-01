@@ -1,7 +1,6 @@
 const MeetingAlert = require('./../mongo/meeting-alert')
 const ModelUtil = require('./../utils/model')
 
-
 exports.createMeetingAlert = async (req, res) => {
     const { attendees, meetingLink, date, title, sender } = req.body;
     // Write code to check if any inputs are valid
