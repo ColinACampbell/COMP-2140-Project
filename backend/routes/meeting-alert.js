@@ -8,7 +8,8 @@ router.use(validationMiddleWare);
 router.use(authMiddleWare.jwtCheck);
 router.post('/',meetingAlertController.createMeetingAlert)
 router.get('/',meetingAlertController.getMeetingAlerts);
+// router.delete('/delete/:id',meetingAlertController.deleteMeetingAlert)
 router.put('/:id',meetingAlertController.editMeetingAlert);
-router.delete('/:id',meetingAlertController.deleteMeetingAlert)
+
 
 module.exports = router;
