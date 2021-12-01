@@ -1,20 +1,20 @@
 const MeetingAlert = require('./../mongo/meeting-alert')
 
-const duplicateCheck = async (res, title, createMeetingAlert) => {
-    const existingMeetingAlerts = await MeetingAlert.find({
+const duplicateTitleCheck = async (res, title, Model, action) => {
+    const existingMeetingAlerts = await Model.find({
         title: title
     });
 
     if (existingMeetingAlerts.length > 0)
         res.status(409).json({})
     else
-        createMeetingAlert(); // runs the create
+        action(); // runs the create
 }
 
 exports.createMeetingAlert = async (req, res) => {
     const { attendees, meetingLink, date, title, sender } = req.body;
     // Write code to check if any inputs are valid
-    duplicateCheck(res, title, () => {
+    duplicateTitleCheck(res, title, MeetingAlert, () => {
         MeetingAlert.create({
             title,
             sender,
@@ -48,24 +48,33 @@ exports.getMeetingAlerts = (req, res) => {
 exports.editMeetingAlert = (req, res) => {
     const meetingAlertId = req.params.id;
     const { meetingLink, date, attendees, title } = req.body
-    console.log("Hello")
-    MeetingAlert.findOne({
-        _id: meetingAlertId
-    }).then((meetingAlert) => {
-        meetingAlert.title = title;
-        meetingAlert.meetingLink = meetingLink;
-        meetingAlert.date = date;
-        meetingAlert.attendees = attendees
-        meetingAlert.save();
-        res.status(200).json({})
+
+    console.log(title)
+
+    duplicateTitleCheck(res, title, MeetingAlert, () => {
+        MeetingAlert.findOne({
+            _id: meetingAlertId
+        }).then((meetingAlert) => {
+            if (meetingAlert === null || meetingAlert === undefined) {
+                res.status(404).json({})
+            } else {
+                meetingAlert.title = title;
+                meetingAlert.meetingLink = meetingLink;
+                meetingAlert.date = date;
+                meetingAlert.attendees = attendees
+                meetingAlert.save();
+                res.status(200).json({})
+            }
+        })
     })
+
 }
 
 exports.deleteMeetingAlert = (req, res) => {
     const meetingId = req.params.id;
     MeetingAlert.deleteOne({
-        _id:meetingId
-    },()=>{
-        res.status(200).json({message:"Item was deleted"})
+        _id: meetingId
+    }, () => {
+        res.status(200).json({ message: "Item was deleted" })
     })
 }
