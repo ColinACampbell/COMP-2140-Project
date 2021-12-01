@@ -31,7 +31,9 @@
                     </div>
                     <button type="submit" class="submit-btn">Sign up</button>
                 </form>
+                <div v-if="error" class="error">Unable to create user account</div>
             </div>
+           
         </div>
     </div> 
 </template>
@@ -46,6 +48,7 @@ export default {
             position: "",
             email : "",
             password: "",
+            error: false,
             positions: ["Data Analyst", "Content Creator", "Coach", "Web developer", "Chief Executive Officer", "Paid Media Specialist", "Content Marketer", "Client"]
         }
     
@@ -58,9 +61,21 @@ export default {
                  email: this.email,
                  password: this.password,
             }
-            let res = User.signup(user)
-            console.log(res)
-            this.$router.push("/")
+            User.signup(user)
+                .then(res => {
+                    if(res == "Invalid"){
+                        this.name = ""
+                        this.position = ""
+                        this.email = ""
+                        this.password = ""
+                        this.error = true
+                    }
+                    else{
+                        this.$router.push("/")
+                    }
+                })
+            
+            
         }
     }
 }
@@ -69,11 +84,15 @@ export default {
 <style scoped>
 .container{
     width: 500px;
-    height: 600px;
+    height: 650px;
     border: 1px solid rgba(0,0,0, 0.25);
     border-radius: 10px;
-    margin: 20px auto;
+    margin: 10px auto;
     text-align: center;
+}
+
+.error{
+    color: #ff0033;
 }
 
 p{

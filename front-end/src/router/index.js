@@ -1,9 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '../store/store'
 import Signup from "../views/Signup.vue"
 import Login from "../views/Login.vue"
 import Dashboard from "../views/Dashboard.vue"
 import Home from "../views/Home.vue"
+import Assets from "../views/Assets.vue"
 import Asset from "../views/Asset.vue"
+import AssetsView from '../views/AssetsView.vue'
+import Notice from "../views/Notice.vue"
+import MeetingAlerts from '../views/MeetingAlerts.vue'
 
 const routes = [
   {
@@ -29,11 +34,38 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
-        path: "/dashboard/asset",
-        name: "Asset",
-        component: Asset,
+        path: "/dashboard/assets",
+        name: "AssetsView",
+        component: AssetsView,
+        meta: { requiresAuth: true },
+        children: [
+          {
+            path: "",
+            name: "Assets",
+            component: Assets,
+            meta: { requiresAuth: true }
+          },
+          {
+            path: "/dashboard/assets/asset/:id",
+            name: "Asset",
+            component: Asset,
+            meta: { requiresAuth: true }
+          }
+        ]
+      },
+      {
+        path: "/dashboard/notices",
+        name: "Notice",
+        component: Notice,
         meta: { requiresAuth: true }
-      }
+      },
+      {
+        path: "/dashboard/meeting_alerts",
+        name: "MeetingAlerts",
+        component: MeetingAlerts,
+        meta: { requiresAuth: true }
+      },
+
     ]
 
   }
@@ -53,7 +85,7 @@ const redirectToLogin = route => {
 };
 
 router.beforeEach((to) => {
-  let localUserData = JSON.parse(localStorage.getItem('login-token'))
+  let localUserData = store.state.userInfo;
   let userData = localUserData || {}
   let userIsAuthenticated = userData.token !== "" && userData.token !== undefined
   const requiresAuth = to.matched.some((route) => route.meta && route.meta.requiresAuth);

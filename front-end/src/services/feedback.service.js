@@ -72,25 +72,5 @@ export default {
         }
 
         return "Failed to upload"
-    },
-    async processMeetingAlert(meetingAlert, token){
-
-        let res = await fetch("http://localhost:3000/meeting-alert/",
-            {
-                method: "POST",
-                body: JSON.stringify(meetingAlert),
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + token,
-                },
-                
-            }
-        )
-            
-        if(res.status === 201){
-            return "Successful"
-        }
-
-        return "Failed to upload"
     }
 }

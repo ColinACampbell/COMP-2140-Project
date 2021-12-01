@@ -1,24 +1,20 @@
 <template>
 <div class="modal">
     <div class="modal-content"> 
-        <h2>Create Asset Container</h2>
-        <form id="create-issue-form" method="post" @submit.prevent="handleSubmit">
+        <h2>Create Meeting Alert</h2>
+        <form id="create-form" method="post" @submit.prevent="handleSubmit">
             <div>
                 <label for="title">Title  <span v-if="error">--{{error}}--</span></label>
                 <input type="text" name="title" id="title" v-model="title" required/>
             </div>
             <div>
-                <label for="description">Description</label>
-                <textarea name="description" id="description" cols="30" rows="10" v-model="description" required></textarea>
+                <label for="dateTime">Meeting Date and Time</label>
+                <input type="datetime-local" name="dateTime" id="dateTime" v-model="dateTime" required>
             </div>
             <div>
-                <label for="reviewDate">Reviewed by</label>
-                <input type="date" name="reviewDate" id="reviewDate" min="" v-model="reviewDate" required>
+                <label for="file">Link to Meeting</label>
+                <input name="link"  type="url" v-model="link"/>
             </div>
-            <!-- <div>
-                <label for="sender">Sender</label>
-                <input type="text" name="sender" id="sender" v-model="senderName" readonly/>
-            </div> -->
             <div>
                 <label for="recipient">Recipient(s)</label>
                 <select name="positions" id="positions" v-model="receiverNames" multiple="true" required>
@@ -32,17 +28,9 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <label for="file">Link to File</label>
-                <input name="link"  type="url" v-model="link"/>
-            </div>
-            <div class="file-input">
-                <label for="file">File Upload</label>
-                <input name="file" class="custom-file-input" id="file" type="file" @change="handleFileUpload( $event )"/>
-            </div>
             <div class="buttons">
                 <button @click="close" id="cancel">Cancel</button>
-                <button type="submit" class="create-btn" :disabled="(file === '' && link === '')">Create</button>
+                <button type="submit" class="create-btn">Create</button>
             </div>
         </form>
     </div>
@@ -50,32 +38,25 @@
 </template>
 
 <script>
-import Form from "../services/form.service"
+import FormService from "../services/form.service"
 import store from '../store/store'
 
 export default {
-  name: 'Asset',
+  name: 'MeetingForm',
   data(){
     return {
         title: "",
-        description: "",
         senderName: store.getters.userName,
-        file: "",
-        type: "",
         link: "",
-        reviewDate: "",
+        dateTime: "",
         recipients: store.getters.members,
+        userID: store.getters.userInfo.user._id,
         receivers: [],
         receiverNames: [],
         error: "",
-        docID: ""
     } 
   },
   methods:{
-    handleFileUpload( event ){
-        this.file = event.target.files[0];
-        this.type = this.file.type;
-    },
     close() {
         this.$emit('close');
     },
@@ -85,21 +66,18 @@ export default {
                 this.receivers.push(recipient._id)
             }
         });
-        let asset = {
-            fileData: this.file,
-            type: this.type,
+        let meeting = {
             title: this.title,
-            description: this.description,
-            sender: this.senderName,
-            reviewBy: this.reviewDate,
-            assetLink: this.link,
-            recipients: this.receivers
+            date: this.dateTime,
+            meetingLink: this.link,
+            attendees: this.receivers,
+            sender: this.userID
         }
-        Form.processAsset(asset)
+        FormService.processMeetingAlert(meeting, store.getters.token)
             .then(res => {
                 if(res === "Successful"){
                     this.close()
-                    alert("Asset Created!")
+                    alert("Meeting Alert Created Successfully!")
                 }else{
                     this.error = "This title exist for another container"
                     this.title = ""
@@ -118,7 +96,7 @@ span{
 .modal {
   position: fixed; 
   z-index: 1; 
-  padding-top: 0px; 
+  padding-top: 80px; 
   left: 0;
   top: 0;
   width: 100vw; 
@@ -163,7 +141,7 @@ form div{
 .buttons{
     display: flex;
     justify-content: flex-end;
-    margin-top: -10px;
+    margin-top: 0px;
 }
 
 .buttons button{
@@ -187,12 +165,6 @@ button:disabled{
 #cancel{
     background: none;
     color: #865cff;
-}
-
-.custom-file-input {
-    border: none;
-    padding-top: 10px;
-
 }
 
 select[multiple] {
